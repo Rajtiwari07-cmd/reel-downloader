@@ -142,10 +142,16 @@ app.get("/download", (req, res) => {
 
 });
 
-app.listen(3000, () => {
+/* =========================
+   RENDER PORT FIX
+========================= */
+
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
 
     console.log(
-        "Server running on http://localhost:3000"
+        `Server running on port ${PORT}`
     );
 
 });

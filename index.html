@@ -1,585 +1,257 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Vyneluo — Premium Reel Downloader</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<title>Reel Downloader</title>
 
 <style>
 
-/* ========================= */
-/* ROOT */
-/* ========================= */
-
-:root{
---bg:#050816;
---card:rgba(255,255,255,.05);
---border:rgba(255,255,255,.08);
---text:#ffffff;
---muted:rgba(255,255,255,.65);
---cyan:#06b6d4;
---purple:#7c3aed;
---pink:#ec4899;
-}
-
 *{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Inter',sans-serif;
-scroll-behavior:smooth;
-will-change:transform;
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
 }
 
 body{
-background:var(--bg);
-color:white;
-overflow-x:hidden;
-cursor:none;
+    min-height:100vh;
+    overflow-x:hidden;
+    background:#0f172a;
 }
-
-/* ========================= */
-/* CUSTOM CURSOR */
-/* ========================= */
-
-.cursor{
-position:fixed;
-width:16px;
-height:16px;
-border-radius:50%;
-background:linear-gradient(135deg,#06b6d4,#7c3aed);
-pointer-events:none;
-transform:translate(-50%,-50%);
-z-index:999999;
-mix-blend-mode:screen;
-transition:transform .05s linear;
-}
-
-/* ========================= */
-/* BACKGROUND */
-/* ========================= */
 
 .bg{
-position:fixed;
-inset:0;
-background:
-radial-gradient(circle at 20% 20%,rgba(124,58,237,.18),transparent 30%),
-radial-gradient(circle at 80% 30%,rgba(6,182,212,.16),transparent 30%),
-#050816;
-z-index:-10;
+    position:fixed;
+    width:100%;
+    height:100%;
+    background:linear-gradient(-45deg,#0f172a,#1e3a8a,#7c3aed,#0ea5e9);
+    background-size:400% 400%;
+    animation:gradient 10s ease infinite;
+    z-index:-1;
 }
 
-.grid{
-position:fixed;
-inset:0;
-background-image:
-linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
-linear-gradient(90deg,rgba(255,255,255,.03) 1px, transparent 1px);
-background-size:120px 120px;
-opacity:.2;
-z-index:-9;
+@keyframes gradient{
+    0%{background-position:0% 50%;}
+    50%{background-position:100% 50%;}
+    100%{background-position:0% 50%;}
 }
 
-/* ========================= */
-/* BLOBS */
-/* ========================= */
-
-.blob{
-position:fixed;
-border-radius:50%;
-filter:blur(70px);
-opacity:.18;
-z-index:-8;
-animation:blobMove 14s ease-in-out infinite alternate;
+.container{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+    padding:20px;
 }
 
-.blob1{
-width:260px;
-height:260px;
-background:#7c3aed;
-top:-60px;
-left:-60px;
+.glass-card{
+    width:100%;
+    max-width:420px;
+    padding:25px;
+    border-radius:24px;
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(18px);
+    border:1px solid rgba(255,255,255,0.2);
+    box-shadow:0 10px 40px rgba(0,0,0,0.3);
+    text-align:center;
+    color:white;
 }
 
-.blob2{
-width:240px;
-height:240px;
-background:#06b6d4;
-bottom:-60px;
-right:-60px;
-animation-delay:3s;
+.top-bar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:15px;
 }
 
-@keyframes blobMove{
-100%{
-transform:translate(40px,-20px) scale(1.05);
-}
-}
-
-/* ========================= */
-/* PARTICLES */
-/* ========================= */
-
-.particles{
-position:fixed;
-inset:0;
-overflow:hidden;
-pointer-events:none;
-z-index:-7;
+h1{
+    font-size:30px;
+    font-weight:bold;
 }
 
-.particle{
-position:absolute;
-width:2px;
-height:2px;
-background:white;
-opacity:.12;
-border-radius:50%;
-animation:particleFloat linear infinite;
+.theme-btn{
+    width:45px;
+    height:45px;
+    border:none;
+    border-radius:50%;
+    background:#f59e0b;
+    color:white;
+    font-size:20px;
+    cursor:pointer;
 }
 
-@keyframes particleFloat{
-0%{
-transform:translateY(100vh);
-opacity:0;
-}
-20%{
-opacity:.15;
-}
-100%{
-transform:translateY(-100px);
-opacity:0;
-}
-}
-
-/* ========================= */
-/* NAVBAR */
-/* ========================= */
-
-nav{
-position:fixed;
-top:18px;
-left:50%;
-transform:translateX(-50%);
-width:92%;
-max-width:1350px;
-padding:18px 28px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-background:rgba(255,255,255,.04);
-border:1px solid rgba(255,255,255,.08);
-backdrop-filter:blur(10px);
-border-radius:22px;
-z-index:999;
-box-shadow:0 10px 35px rgba(0,0,0,.2);
-}
-
-.logo{
-font-size:32px;
-font-weight:900;
-background:linear-gradient(90deg,#7c3aed,#06b6d4,#ec4899);
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
-}
-
-nav ul{
-display:flex;
-gap:30px;
-list-style:none;
-}
-
-nav ul li a{
-text-decoration:none;
-color:white;
-font-size:14px;
-opacity:.75;
-transition:.3s;
-}
-
-nav ul li a:hover{
-opacity:1;
-color:#06b6d4;
-}
-
-/* ========================= */
-/* HERO */
-/* ========================= */
-
-.hero{
-min-height:100vh;
-display:flex;
-align-items:center;
-padding:140px 8% 80px;
-}
-
-.hero-container{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:70px;
-align-items:center;
-width:100%;
-}
-
-.hero-text h1{
-font-size:84px;
-line-height:1.02;
-font-weight:900;
-letter-spacing:-3px;
-margin-bottom:24px;
-}
-
-.gradient{
-background:linear-gradient(90deg,#7c3aed,#06b6d4,#ec4899);
-background-size:250% 250%;
-animation:gradientAnim 7s ease infinite;
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
-}
-
-@keyframes gradientAnim{
-50%{
-background-position:100% 50%;
-}
-}
-
-.hero-text p{
-font-size:18px;
-line-height:1.8;
-opacity:.72;
-margin-bottom:35px;
-max-width:650px;
-}
-
-.hero-buttons{
-display:flex;
-gap:18px;
-}
-
-.hero-btn{
-padding:18px 30px;
-border:none;
-border-radius:18px;
-font-size:15px;
-font-weight:700;
-cursor:pointer;
-transition:.35s;
-}
-
-.primary{
-background:linear-gradient(90deg,#7c3aed,#06b6d4);
-color:white;
-box-shadow:0 10px 35px rgba(124,58,237,.25);
-}
-
-.secondary{
-background:rgba(255,255,255,.05);
-border:1px solid rgba(255,255,255,.08);
-color:white;
-}
-
-.hero-btn:hover{
-transform:translateY(-4px);
-}
-
-/* ========================= */
-/* DOWNLOADER */
-/* ========================= */
-
-.downloader{
-padding:34px;
-border-radius:28px;
-background:rgba(255,255,255,.04);
-border:1px solid rgba(255,255,255,.08);
-backdrop-filter:blur(12px);
-box-shadow:0 10px 40px rgba(0,0,0,.22);
-}
-
-.badge{
-display:inline-block;
-padding:10px 18px;
-border-radius:40px;
-background:rgba(124,58,237,.15);
-font-size:13px;
-margin-bottom:20px;
-}
-
-.downloader h2{
-font-size:34px;
-margin-bottom:12px;
-}
-
-.downloader p{
-line-height:1.8;
-opacity:.72;
-margin-bottom:24px;
+p{
+    font-size:14px;
+    opacity:0.8;
+    margin-bottom:20px;
 }
 
 .input-box{
-margin-bottom:18px;
+    position:relative;
+    margin-bottom:15px;
 }
 
-.input-box input{
-width:100%;
-padding:20px;
-border:none;
-outline:none;
-border-radius:18px;
-background:#0b1225;
-color:white;
-font-size:15px;
-border:1px solid rgba(255,255,255,.08);
-transition:.3s;
+input{
+    width:100%;
+    padding:14px 110px 14px 14px;
+    border:none;
+    border-radius:14px;
+    outline:none;
+    font-size:14px;
 }
 
-.input-box input:focus{
-border-color:#06b6d4;
+.icon-buttons{
+    position:absolute;
+    top:50%;
+    right:10px;
+    transform:translateY(-50%);
+    display:flex;
+    gap:8px;
 }
 
-#previewBtn,
-#downloadBtn{
-width:100%;
-padding:18px;
-border:none;
-border-radius:20px;
-font-size:15px;
-font-weight:800;
-cursor:pointer;
-color:white;
-background:linear-gradient(270deg,#7c3aed,#06b6d4,#ec4899,#7c3aed);
-background-size:300% 300%;
-animation:gradientAnim 8s ease infinite;
-transition:.35s;
-box-shadow:0 10px 35px rgba(124,58,237,.22);
+.small-btn{
+    width:34px;
+    height:34px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    color:white;
+    font-size:16px;
+    display:none;
 }
 
-#previewBtn:hover,
-#downloadBtn:hover{
-transform:translateY(-4px);
+#pasteBtn{
+    background:#22c55e;
+    display:block;
+}
+
+#resetBtn{
+    background:#ef4444;
+}
+
+.main-btn{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:14px;
+    background:linear-gradient(90deg,#c084fc,#f472b6);
+    color:white;
+    font-size:15px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.main-btn:hover{
+    transform:scale(1.02);
 }
 
 #msg{
-margin-top:18px;
-font-size:14px;
-opacity:.85;
+    margin-top:15px;
+    font-size:14px;
 }
 
-/* ========================= */
-/* PREVIEW */
-/* ========================= */
-
-.preview{
-display:none;
-margin-top:30px;
-animation:fadeUp .6s ease;
+.loader{
+    width:40px;
+    height:40px;
+    border:4px solid rgba(255,255,255,0.3);
+    border-top:4px solid white;
+    border-radius:50%;
+    margin:10px auto;
+    animation:spin 1s linear infinite;
 }
 
-.preview img,
-.preview video{
-width:100%;
-border-radius:22px;
-margin-bottom:20px;
+@keyframes spin{
+    0%{transform:rotate(0deg);}
+    100%{transform:rotate(360deg);}
+}
+
+.progress-box{
+    width:100%;
+    height:10px;
+    background:rgba(255,255,255,0.2);
+    border-radius:20px;
+    margin-top:15px;
+    overflow:hidden;
+    display:none;
+}
+
+.progress-bar{
+    width:0%;
+    height:100%;
+    background:#22c55e;
+    transition:0.3s;
+}
+
+#preview{
+    display:none;
+    margin-top:20px;
+    animation:fade 0.5s ease;
+}
+
+@keyframes fade{
+    from{
+        opacity:0;
+        transform:translateY(10px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+.label{
+    display:inline-block;
+    padding:6px 12px;
+    border-radius:20px;
+    background:#c084fc;
+    font-size:12px;
+    font-weight:bold;
+    margin-bottom:15px;
+}
+
+#thumbnail{
+    width:100%;
+    border-radius:16px;
+    margin-bottom:15px;
+    background:#111827;
+    display:block;
+}
+
+#videoPreview{
+    width:100%;
+    border-radius:16px;
+    margin-bottom:15px;
+    display:none;
 }
 
 #title{
-font-size:16px;
-line-height:1.7;
-margin-bottom:20px;
+    font-size:15px;
+    margin-bottom:15px;
+    word-break:break-word;
 }
 
-/* ========================= */
-/* QUALITY */
-/* ========================= */
-
-.quality-box{
-display:none;
-margin-top:25px;
-padding:24px;
-border-radius:24px;
-background:rgba(255,255,255,.04);
-border:1px solid rgba(255,255,255,.08);
-backdrop-filter:blur(10px);
-animation:fadeUp .6s ease;
+select{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:12px;
+    margin-bottom:15px;
+    outline:none;
 }
 
-.quality-box h3{
-font-size:30px;
-margin-bottom:10px;
+.light-mode{
+    background:#f3f4f6;
 }
 
-.quality-box p{
-opacity:.7;
-margin-bottom:22px;
+.light-mode .glass-card{
+    background:rgba(255,255,255,0.7);
+    color:black;
 }
 
-.quality-grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:15px;
-margin-bottom:22px;
-}
-
-.quality-card{
-padding:20px;
-border-radius:18px;
-background:rgba(255,255,255,.04);
-border:1px solid rgba(255,255,255,.08);
-cursor:pointer;
-transition:.3s;
-}
-
-.quality-card:hover,
-.active-quality{
-transform:translateY(-4px);
-border-color:#06b6d4;
-background:rgba(6,182,212,.08);
-}
-
-.quality-card h4{
-font-size:22px;
-margin-bottom:8px;
-}
-
-.quality-card span{
-font-size:13px;
-opacity:.7;
-}
-
-/* ========================= */
-/* SECTIONS */
-/* ========================= */
-
-.section{
-padding:120px 8%;
-}
-
-.section-title{
-font-size:64px;
-text-align:center;
-margin-bottom:20px;
-font-weight:900;
-letter-spacing:-2px;
-}
-
-.section-sub{
-text-align:center;
-max-width:700px;
-margin:auto;
-line-height:1.9;
-opacity:.72;
-margin-bottom:70px;
-}
-
-/* ========================= */
-/* CARDS */
-/* ========================= */
-
-.cards{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
-gap:24px;
-}
-
-.card{
-padding:32px;
-border-radius:24px;
-background:rgba(255,255,255,.04);
-border:1px solid rgba(255,255,255,.08);
-backdrop-filter:blur(10px);
-transition:.35s;
-}
-
-.card:hover{
-transform:translateY(-8px);
-}
-
-.card h2{
-font-size:30px;
-margin-bottom:14px;
-}
-
-.card p{
-line-height:1.8;
-opacity:.72;
-}
-
-/* ========================= */
-/* FOOTER */
-/* ========================= */
-
-footer{
-padding:90px 8%;
-text-align:center;
-border-top:1px solid rgba(255,255,255,.08);
-background:rgba(255,255,255,.03);
-backdrop-filter:blur(8px);
-}
-
-footer h2{
-font-size:38px;
-margin-bottom:18px;
-}
-
-footer p{
-opacity:.7;
-}
-
-/* ========================= */
-/* REVEAL */
-/* ========================= */
-
-.reveal{
-opacity:0;
-transform:translateY(40px);
-transition:1s;
-}
-
-.reveal.active{
-opacity:1;
-transform:translateY(0);
-}
-
-@keyframes fadeUp{
-from{
-opacity:0;
-transform:translateY(20px);
-}
-to{
-opacity:1;
-transform:translateY(0);
-}
-}
-
-/* ========================= */
-/* RESPONSIVE */
-/* ========================= */
-
-@media(max-width:1050px){
-
-.hero-container{
-grid-template-columns:1fr;
-}
-
-.hero-text h1{
-font-size:62px;
-}
-
-nav ul{
-display:none;
-}
-
-.quality-grid{
-grid-template-columns:1fr;
-}
-
-.section-title{
-font-size:48px;
-}
-
+.light-mode input,
+.light-mode select{
+    background:white;
 }
 
 </style>
@@ -587,146 +259,79 @@ font-size:48px;
 
 <body>
 
-<div class="cursor"></div>
-
 <div class="bg"></div>
-<div class="grid"></div>
 
-<div class="blob blob1"></div>
-<div class="blob blob2"></div>
+<div class="container">
 
-<div class="particles" id="particles"></div>
+<div class="glass-card">
 
-<!-- NAVBAR -->
+<div class="top-bar">
 
-<nav>
+<h1>📥 Reel Downloader</h1>
 
-<div class="logo">
-Vyneluo
-</div>
-
-<ul>
-<li><a href="#">Home</a></li>
-<li><a href="#">Features</a></li>
-<li><a href="#">Technology</a></li>
-<li><a href="#">FAQ</a></li>
-</ul>
-
-</nav>
-
-<!-- HERO -->
-
-<section class="hero">
-
-<div class="hero-container">
-
-<div class="hero-text reveal">
-
-<h1>
-Download Reels
-<span class="gradient">Like Magic</span>
-</h1>
-
-<p>
-Vyneluo is a futuristic Instagram reel downloader with premium cinematic UI, smooth animations, fast cloud downloads, and intelligent quality detection.
-</p>
-
-<div class="hero-buttons">
-
-<button class="hero-btn primary">
-Start Downloading
-</button>
-
-<button class="hero-btn secondary">
-Explore Platform
+<button class="theme-btn" id="themeBtn">
+🌙
 </button>
 
 </div>
 
-</div>
-
-<!-- DOWNLOADER -->
-
-<div class="downloader reveal">
-
-<div class="badge">
-⚡ AI Smart Reel Engine
-</div>
-
-<h2>Instagram Reel Downloader</h2>
-
-<p>
-Paste your Instagram reel URL below and generate a cinematic preview with all available qualities.
-</p>
+<p>Paste Instagram reel link below</p>
 
 <div class="input-box">
 
 <input
 type="text"
 id="url"
-placeholder="Paste Instagram Reel URL..."
+placeholder="https://www.instagram.com/reel/..."
 >
+
+<div class="icon-buttons">
+
+<button class="small-btn" id="pasteBtn">
+📋
+</button>
+
+<button class="small-btn" id="resetBtn">
+↻
+</button>
 
 </div>
 
-<button id="previewBtn">
+</div>
+
+<button class="main-btn" id="previewBtn">
 Generate Preview
 </button>
 
 <div id="msg"></div>
 
-<!-- PREVIEW -->
+<div class="progress-box" id="progressBox">
+<div class="progress-bar" id="progressBar"></div>
+</div>
 
-<div class="preview" id="preview">
+<div id="preview">
+
+<div class="label">
+🎬 REEL
+</div>
 
 <img id="thumbnail">
 
 <video
 id="videoPreview"
 controls
-style="display:none"
 ></video>
 
 <div id="title"></div>
 
-</div>
+<select id="quality">
+<option>HD Quality</option>
+<option>Medium Quality</option>
+<option>Low Quality</option>
+</select>
 
-<!-- QUALITY -->
-
-<div class="quality-box" id="qualityBox">
-
-<h3>Select Quality</h3>
-
-<p>
-Available download qualities detected for this reel.
-</p>
-
-<div class="quality-grid">
-
-<div class="quality-card active-quality">
-<h4>1080P</h4>
-<span>Ultra HD • MP4</span>
-</div>
-
-<div class="quality-card">
-<h4>720P</h4>
-<span>HD Quality • MP4</span>
-</div>
-
-<div class="quality-card">
-<h4>480P</h4>
-<span>Medium Quality • MP4</span>
-</div>
-
-<div class="quality-card">
-<h4>360P</h4>
-<span>Low Quality • MP4</span>
-</div>
-
-</div>
-
-<button id="downloadBtn">
-⬇ Download Selected Quality
+<button class="main-btn" id="downloadBtn">
+⬇ Download Reel
 </button>
 
 </div>
@@ -735,189 +340,19 @@ Available download qualities detected for this reel.
 
 </div>
 
-</section>
-
-<!-- FEATURES -->
-
-<section class="section reveal">
-
-<h1 class="section-title">
-Future Of Downloads
-</h1>
-
-<p class="section-sub">
-Designed like a premium startup product with cinematic animations and futuristic interactions.
-</p>
-
-<div class="cards">
-
-<div class="card">
-<h2>⚡ Ultra Fast</h2>
-<p>
-Lightning-fast cloud downloads with optimized servers.
-</p>
-</div>
-
-<div class="card">
-<h2>🎬 4K Quality</h2>
-<p>
-Download the highest available quality instantly.
-</p>
-</div>
-
-<div class="card">
-<h2>🔒 Secure</h2>
-<p>
-Private encrypted infrastructure for secure downloads.
-</p>
-</div>
-
-<div class="card">
-<h2>🚀 AI Preview</h2>
-<p>
-Smart reel preview with cinematic transitions.
-</p>
-</div>
-
-<div class="card">
-<h2>🌎 Global CDN</h2>
-<p>
-Fast worldwide delivery with optimized cloud edge nodes.
-</p>
-</div>
-
-<div class="card">
-<h2>✨ Premium UI</h2>
-<p>
-Modern startup-level glassmorphism interface.
-</p>
-</div>
-
-</div>
-
-</section>
-
-<!-- FOOTER -->
-
-<footer>
-
-<h2>Vyneluo</h2>
-
-<p>
-The future of Instagram reel downloading.
-</p>
-
-</footer>
-
 <script>
-
-/* ========================= */
-/* PARTICLES */
-/* ========================= */
-
-const particles =
-document.getElementById("particles");
-
-for(let i=0;i<35;i++){
-
-const particle =
-document.createElement("div");
-
-particle.classList.add("particle");
-
-particle.style.left =
-Math.random()*100 + "vw";
-
-particle.style.animationDuration =
-(8 + Math.random()*8) + "s";
-
-particle.style.animationDelay =
-Math.random()*5 + "s";
-
-particles.appendChild(particle);
-
-}
-
-/* ========================= */
-/* CURSOR */
-/* ========================= */
-
-const cursor =
-document.querySelector(".cursor");
-
-document.addEventListener(
-"mousemove",
-e=>{
-
-cursor.style.left =
-e.clientX + "px";
-
-cursor.style.top =
-e.clientY + "px";
-
-}
-);
-
-/* ========================= */
-/* REVEAL */
-/* ========================= */
-
-const reveals =
-document.querySelectorAll(".reveal");
-
-window.addEventListener(
-"scroll",
-()=>{
-
-reveals.forEach(r=>{
-
-const top =
-r.getBoundingClientRect().top;
-
-if(top < window.innerHeight - 100){
-
-r.classList.add("active");
-
-}
-
-});
-
-}
-);
-
-/* ========================= */
-/* QUALITY SELECT */
-/* ========================= */
-
-const qualityCards =
-document.querySelectorAll(".quality-card");
-
-qualityCards.forEach(card=>{
-
-card.addEventListener(
-"click",
-()=>{
-
-qualityCards.forEach(c=>
-c.classList.remove("active-quality")
-);
-
-card.classList.add("active-quality");
-
-}
-);
-
-});
-
-/* ========================= */
-/* DOWNLOADER */
-/* ========================= */
 
 const previewBtn =
 document.getElementById("previewBtn");
 
 const downloadBtn =
 document.getElementById("downloadBtn");
+
+const resetBtn =
+document.getElementById("resetBtn");
+
+const pasteBtn =
+document.getElementById("pasteBtn");
 
 const msg =
 document.getElementById("msg");
@@ -937,128 +372,195 @@ document.getElementById("title");
 const urlInput =
 document.getElementById("url");
 
-const qualityBox =
-document.getElementById("qualityBox");
+const progressBox =
+document.getElementById("progressBox");
+
+const progressBar =
+document.getElementById("progressBar");
+
+const themeBtn =
+document.getElementById("themeBtn");
 
 let currentUrl = "";
 
-/* ========================= */
-/* PREVIEW */
-/* ========================= */
+urlInput.addEventListener("input", () => {
 
-previewBtn.addEventListener(
-"click",
-async()=>{
+if(urlInput.value.trim() !== ""){
 
-const url =
-urlInput.value.trim();
+resetBtn.style.display = "block";
+
+}else{
+
+resetBtn.style.display = "none";
+}
+
+});
+
+pasteBtn.addEventListener("click", async () => {
+
+try{
+
+const text = await navigator.clipboard.readText();
+
+urlInput.value = text;
+
+if(text.trim() !== ""){
+
+resetBtn.style.display = "block";
+}
+
+}catch(err){
+
+alert("Paste failed");
+
+}
+
+});
+
+function resetAll(){
+
+urlInput.value = "";
+
+preview.style.display = "none";
+
+msg.innerText = "";
+
+thumbnail.src = "";
+
+title.innerText = "";
+
+currentUrl = "";
+
+videoPreview.style.display = "none";
+
+videoPreview.src = "";
+
+thumbnail.style.display = "block";
+
+resetBtn.style.display = "none";
+
+progressBox.style.display = "none";
+
+progressBar.style.width = "0%";
+}
+
+resetBtn.addEventListener("click", resetAll);
+
+previewBtn.addEventListener("click", async () => {
+
+const url = urlInput.value.trim();
 
 if(!url){
 
-msg.innerHTML =
-"Paste Instagram reel URL first.";
+msg.innerText = "Paste Instagram link first";
 
 return;
-
 }
 
 currentUrl = url;
 
-msg.innerHTML =
-"Generating cinematic preview...";
+preview.style.display = "none";
+
+msg.innerHTML = `
+<div class="loader"></div>
+<p>Fetching preview...</p>
+`;
+
+previewBtn.disabled = true;
 
 try{
 
-const response =
-await fetch(
+const response = await fetch(
 `http://localhost:3000/info?url=${encodeURIComponent(url)}`
 );
 
-const data =
-await response.json();
+const data = await response.json();
 
 if(!data.success){
 
-msg.innerHTML =
-"Failed to fetch preview.";
+msg.innerText = "Failed to fetch preview";
+
+previewBtn.disabled = false;
 
 return;
-
 }
 
 thumbnail.src =
 "https://images.weserv.nl/?url=" +
 encodeURIComponent(data.thumbnail);
 
-thumbnail.style.display =
-"block";
+thumbnail.style.display = "block";
 
-videoPreview.style.display =
-"none";
+videoPreview.style.display = "none";
 
 videoPreview.src = "";
 
-title.innerText =
-data.title;
+title.innerText = data.title;
 
-preview.style.display =
-"block";
+preview.style.display = "block";
 
-qualityBox.style.display =
-"block";
-
-msg.innerHTML =
-"Preview generated successfully ✔";
+msg.innerText = "Preview loaded ✔";
 
 }catch(err){
 
 console.error(err);
 
-msg.innerHTML =
-"Server error.";
-
+msg.innerText = "Server Error";
 }
 
+previewBtn.disabled = false;
+
+});
+
+downloadBtn.addEventListener("click", async () => {
+
+msg.innerHTML = `
+<div class="loader"></div>
+<p>Downloading...</p>
+`;
+
+progressBox.style.display = "block";
+
+progressBar.style.width = "0%";
+
+let progress = 0;
+
+const fakeProgress = setInterval(() => {
+
+if(progress < 90){
+
+progress += 10;
+
+progressBar.style.width = progress + "%";
 }
-);
 
-/* ========================= */
-/* DOWNLOAD */
-/* ========================= */
-
-downloadBtn.addEventListener(
-"click",
-async()=>{
-
-msg.innerHTML =
-"Downloading reel...";
+},300);
 
 try{
 
-const response =
-await fetch(
+const response = await fetch(
 `http://localhost:3000/download?url=${encodeURIComponent(currentUrl)}`
 );
 
 if(!response.ok){
 
 throw new Error("Download failed");
-
 }
 
-const blob =
-await response.blob();
+const blob = await response.blob();
+
+clearInterval(fakeProgress);
+
+progressBar.style.width = "100%";
 
 const downloadUrl =
 window.URL.createObjectURL(blob);
 
-const a =
-document.createElement("a");
+const a = document.createElement("a");
 
 a.href = downloadUrl;
 
-a.download =
-"vyneluo-reel.mp4";
+a.download = "instagram-reel.mp4";
 
 document.body.appendChild(a);
 
@@ -1066,29 +568,39 @@ a.click();
 
 a.remove();
 
-thumbnail.style.display =
-"none";
+thumbnail.style.display = "none";
 
-videoPreview.style.display =
-"block";
+videoPreview.style.display = "block";
 
-videoPreview.src =
-downloadUrl;
+videoPreview.src = downloadUrl;
 
-msg.innerHTML =
-"Download complete ✔";
+videoPreview.play();
+
+msg.innerText = "Download complete ✔";
 
 }catch(err){
 
 console.error(err);
 
-msg.innerHTML =
-"Download failed.";
-
+msg.innerText = "Download failed";
 }
 
+});
+
+themeBtn.addEventListener("click", () => {
+
+document.body.classList.toggle("light-mode");
+
+if(document.body.classList.contains("light-mode")){
+
+themeBtn.innerText = "☀";
+
+}else{
+
+themeBtn.innerText = "🌙";
 }
-);
+
+});
 
 </script>
 
