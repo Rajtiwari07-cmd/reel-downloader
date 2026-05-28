@@ -1,0 +1,1096 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Vyneluo — Premium Reel Downloader</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+
+/* ========================= */
+/* ROOT */
+/* ========================= */
+
+:root{
+--bg:#050816;
+--card:rgba(255,255,255,.05);
+--border:rgba(255,255,255,.08);
+--text:#ffffff;
+--muted:rgba(255,255,255,.65);
+--cyan:#06b6d4;
+--purple:#7c3aed;
+--pink:#ec4899;
+}
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Inter',sans-serif;
+scroll-behavior:smooth;
+will-change:transform;
+}
+
+body{
+background:var(--bg);
+color:white;
+overflow-x:hidden;
+cursor:none;
+}
+
+/* ========================= */
+/* CUSTOM CURSOR */
+/* ========================= */
+
+.cursor{
+position:fixed;
+width:16px;
+height:16px;
+border-radius:50%;
+background:linear-gradient(135deg,#06b6d4,#7c3aed);
+pointer-events:none;
+transform:translate(-50%,-50%);
+z-index:999999;
+mix-blend-mode:screen;
+transition:transform .05s linear;
+}
+
+/* ========================= */
+/* BACKGROUND */
+/* ========================= */
+
+.bg{
+position:fixed;
+inset:0;
+background:
+radial-gradient(circle at 20% 20%,rgba(124,58,237,.18),transparent 30%),
+radial-gradient(circle at 80% 30%,rgba(6,182,212,.16),transparent 30%),
+#050816;
+z-index:-10;
+}
+
+.grid{
+position:fixed;
+inset:0;
+background-image:
+linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+linear-gradient(90deg,rgba(255,255,255,.03) 1px, transparent 1px);
+background-size:120px 120px;
+opacity:.2;
+z-index:-9;
+}
+
+/* ========================= */
+/* BLOBS */
+/* ========================= */
+
+.blob{
+position:fixed;
+border-radius:50%;
+filter:blur(70px);
+opacity:.18;
+z-index:-8;
+animation:blobMove 14s ease-in-out infinite alternate;
+}
+
+.blob1{
+width:260px;
+height:260px;
+background:#7c3aed;
+top:-60px;
+left:-60px;
+}
+
+.blob2{
+width:240px;
+height:240px;
+background:#06b6d4;
+bottom:-60px;
+right:-60px;
+animation-delay:3s;
+}
+
+@keyframes blobMove{
+100%{
+transform:translate(40px,-20px) scale(1.05);
+}
+}
+
+/* ========================= */
+/* PARTICLES */
+/* ========================= */
+
+.particles{
+position:fixed;
+inset:0;
+overflow:hidden;
+pointer-events:none;
+z-index:-7;
+}
+
+.particle{
+position:absolute;
+width:2px;
+height:2px;
+background:white;
+opacity:.12;
+border-radius:50%;
+animation:particleFloat linear infinite;
+}
+
+@keyframes particleFloat{
+0%{
+transform:translateY(100vh);
+opacity:0;
+}
+20%{
+opacity:.15;
+}
+100%{
+transform:translateY(-100px);
+opacity:0;
+}
+}
+
+/* ========================= */
+/* NAVBAR */
+/* ========================= */
+
+nav{
+position:fixed;
+top:18px;
+left:50%;
+transform:translateX(-50%);
+width:92%;
+max-width:1350px;
+padding:18px 28px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+background:rgba(255,255,255,.04);
+border:1px solid rgba(255,255,255,.08);
+backdrop-filter:blur(10px);
+border-radius:22px;
+z-index:999;
+box-shadow:0 10px 35px rgba(0,0,0,.2);
+}
+
+.logo{
+font-size:32px;
+font-weight:900;
+background:linear-gradient(90deg,#7c3aed,#06b6d4,#ec4899);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+nav ul{
+display:flex;
+gap:30px;
+list-style:none;
+}
+
+nav ul li a{
+text-decoration:none;
+color:white;
+font-size:14px;
+opacity:.75;
+transition:.3s;
+}
+
+nav ul li a:hover{
+opacity:1;
+color:#06b6d4;
+}
+
+/* ========================= */
+/* HERO */
+/* ========================= */
+
+.hero{
+min-height:100vh;
+display:flex;
+align-items:center;
+padding:140px 8% 80px;
+}
+
+.hero-container{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:70px;
+align-items:center;
+width:100%;
+}
+
+.hero-text h1{
+font-size:84px;
+line-height:1.02;
+font-weight:900;
+letter-spacing:-3px;
+margin-bottom:24px;
+}
+
+.gradient{
+background:linear-gradient(90deg,#7c3aed,#06b6d4,#ec4899);
+background-size:250% 250%;
+animation:gradientAnim 7s ease infinite;
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+@keyframes gradientAnim{
+50%{
+background-position:100% 50%;
+}
+}
+
+.hero-text p{
+font-size:18px;
+line-height:1.8;
+opacity:.72;
+margin-bottom:35px;
+max-width:650px;
+}
+
+.hero-buttons{
+display:flex;
+gap:18px;
+}
+
+.hero-btn{
+padding:18px 30px;
+border:none;
+border-radius:18px;
+font-size:15px;
+font-weight:700;
+cursor:pointer;
+transition:.35s;
+}
+
+.primary{
+background:linear-gradient(90deg,#7c3aed,#06b6d4);
+color:white;
+box-shadow:0 10px 35px rgba(124,58,237,.25);
+}
+
+.secondary{
+background:rgba(255,255,255,.05);
+border:1px solid rgba(255,255,255,.08);
+color:white;
+}
+
+.hero-btn:hover{
+transform:translateY(-4px);
+}
+
+/* ========================= */
+/* DOWNLOADER */
+/* ========================= */
+
+.downloader{
+padding:34px;
+border-radius:28px;
+background:rgba(255,255,255,.04);
+border:1px solid rgba(255,255,255,.08);
+backdrop-filter:blur(12px);
+box-shadow:0 10px 40px rgba(0,0,0,.22);
+}
+
+.badge{
+display:inline-block;
+padding:10px 18px;
+border-radius:40px;
+background:rgba(124,58,237,.15);
+font-size:13px;
+margin-bottom:20px;
+}
+
+.downloader h2{
+font-size:34px;
+margin-bottom:12px;
+}
+
+.downloader p{
+line-height:1.8;
+opacity:.72;
+margin-bottom:24px;
+}
+
+.input-box{
+margin-bottom:18px;
+}
+
+.input-box input{
+width:100%;
+padding:20px;
+border:none;
+outline:none;
+border-radius:18px;
+background:#0b1225;
+color:white;
+font-size:15px;
+border:1px solid rgba(255,255,255,.08);
+transition:.3s;
+}
+
+.input-box input:focus{
+border-color:#06b6d4;
+}
+
+#previewBtn,
+#downloadBtn{
+width:100%;
+padding:18px;
+border:none;
+border-radius:20px;
+font-size:15px;
+font-weight:800;
+cursor:pointer;
+color:white;
+background:linear-gradient(270deg,#7c3aed,#06b6d4,#ec4899,#7c3aed);
+background-size:300% 300%;
+animation:gradientAnim 8s ease infinite;
+transition:.35s;
+box-shadow:0 10px 35px rgba(124,58,237,.22);
+}
+
+#previewBtn:hover,
+#downloadBtn:hover{
+transform:translateY(-4px);
+}
+
+#msg{
+margin-top:18px;
+font-size:14px;
+opacity:.85;
+}
+
+/* ========================= */
+/* PREVIEW */
+/* ========================= */
+
+.preview{
+display:none;
+margin-top:30px;
+animation:fadeUp .6s ease;
+}
+
+.preview img,
+.preview video{
+width:100%;
+border-radius:22px;
+margin-bottom:20px;
+}
+
+#title{
+font-size:16px;
+line-height:1.7;
+margin-bottom:20px;
+}
+
+/* ========================= */
+/* QUALITY */
+/* ========================= */
+
+.quality-box{
+display:none;
+margin-top:25px;
+padding:24px;
+border-radius:24px;
+background:rgba(255,255,255,.04);
+border:1px solid rgba(255,255,255,.08);
+backdrop-filter:blur(10px);
+animation:fadeUp .6s ease;
+}
+
+.quality-box h3{
+font-size:30px;
+margin-bottom:10px;
+}
+
+.quality-box p{
+opacity:.7;
+margin-bottom:22px;
+}
+
+.quality-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:15px;
+margin-bottom:22px;
+}
+
+.quality-card{
+padding:20px;
+border-radius:18px;
+background:rgba(255,255,255,.04);
+border:1px solid rgba(255,255,255,.08);
+cursor:pointer;
+transition:.3s;
+}
+
+.quality-card:hover,
+.active-quality{
+transform:translateY(-4px);
+border-color:#06b6d4;
+background:rgba(6,182,212,.08);
+}
+
+.quality-card h4{
+font-size:22px;
+margin-bottom:8px;
+}
+
+.quality-card span{
+font-size:13px;
+opacity:.7;
+}
+
+/* ========================= */
+/* SECTIONS */
+/* ========================= */
+
+.section{
+padding:120px 8%;
+}
+
+.section-title{
+font-size:64px;
+text-align:center;
+margin-bottom:20px;
+font-weight:900;
+letter-spacing:-2px;
+}
+
+.section-sub{
+text-align:center;
+max-width:700px;
+margin:auto;
+line-height:1.9;
+opacity:.72;
+margin-bottom:70px;
+}
+
+/* ========================= */
+/* CARDS */
+/* ========================= */
+
+.cards{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+gap:24px;
+}
+
+.card{
+padding:32px;
+border-radius:24px;
+background:rgba(255,255,255,.04);
+border:1px solid rgba(255,255,255,.08);
+backdrop-filter:blur(10px);
+transition:.35s;
+}
+
+.card:hover{
+transform:translateY(-8px);
+}
+
+.card h2{
+font-size:30px;
+margin-bottom:14px;
+}
+
+.card p{
+line-height:1.8;
+opacity:.72;
+}
+
+/* ========================= */
+/* FOOTER */
+/* ========================= */
+
+footer{
+padding:90px 8%;
+text-align:center;
+border-top:1px solid rgba(255,255,255,.08);
+background:rgba(255,255,255,.03);
+backdrop-filter:blur(8px);
+}
+
+footer h2{
+font-size:38px;
+margin-bottom:18px;
+}
+
+footer p{
+opacity:.7;
+}
+
+/* ========================= */
+/* REVEAL */
+/* ========================= */
+
+.reveal{
+opacity:0;
+transform:translateY(40px);
+transition:1s;
+}
+
+.reveal.active{
+opacity:1;
+transform:translateY(0);
+}
+
+@keyframes fadeUp{
+from{
+opacity:0;
+transform:translateY(20px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+
+/* ========================= */
+/* RESPONSIVE */
+/* ========================= */
+
+@media(max-width:1050px){
+
+.hero-container{
+grid-template-columns:1fr;
+}
+
+.hero-text h1{
+font-size:62px;
+}
+
+nav ul{
+display:none;
+}
+
+.quality-grid{
+grid-template-columns:1fr;
+}
+
+.section-title{
+font-size:48px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="cursor"></div>
+
+<div class="bg"></div>
+<div class="grid"></div>
+
+<div class="blob blob1"></div>
+<div class="blob blob2"></div>
+
+<div class="particles" id="particles"></div>
+
+<!-- NAVBAR -->
+
+<nav>
+
+<div class="logo">
+Vyneluo
+</div>
+
+<ul>
+<li><a href="#">Home</a></li>
+<li><a href="#">Features</a></li>
+<li><a href="#">Technology</a></li>
+<li><a href="#">FAQ</a></li>
+</ul>
+
+</nav>
+
+<!-- HERO -->
+
+<section class="hero">
+
+<div class="hero-container">
+
+<div class="hero-text reveal">
+
+<h1>
+Download Reels
+<span class="gradient">Like Magic</span>
+</h1>
+
+<p>
+Vyneluo is a futuristic Instagram reel downloader with premium cinematic UI, smooth animations, fast cloud downloads, and intelligent quality detection.
+</p>
+
+<div class="hero-buttons">
+
+<button class="hero-btn primary">
+Start Downloading
+</button>
+
+<button class="hero-btn secondary">
+Explore Platform
+</button>
+
+</div>
+
+</div>
+
+<!-- DOWNLOADER -->
+
+<div class="downloader reveal">
+
+<div class="badge">
+⚡ AI Smart Reel Engine
+</div>
+
+<h2>Instagram Reel Downloader</h2>
+
+<p>
+Paste your Instagram reel URL below and generate a cinematic preview with all available qualities.
+</p>
+
+<div class="input-box">
+
+<input
+type="text"
+id="url"
+placeholder="Paste Instagram Reel URL..."
+>
+
+</div>
+
+<button id="previewBtn">
+Generate Preview
+</button>
+
+<div id="msg"></div>
+
+<!-- PREVIEW -->
+
+<div class="preview" id="preview">
+
+<img id="thumbnail">
+
+<video
+id="videoPreview"
+controls
+style="display:none"
+></video>
+
+<div id="title"></div>
+
+</div>
+
+<!-- QUALITY -->
+
+<div class="quality-box" id="qualityBox">
+
+<h3>Select Quality</h3>
+
+<p>
+Available download qualities detected for this reel.
+</p>
+
+<div class="quality-grid">
+
+<div class="quality-card active-quality">
+<h4>1080P</h4>
+<span>Ultra HD • MP4</span>
+</div>
+
+<div class="quality-card">
+<h4>720P</h4>
+<span>HD Quality • MP4</span>
+</div>
+
+<div class="quality-card">
+<h4>480P</h4>
+<span>Medium Quality • MP4</span>
+</div>
+
+<div class="quality-card">
+<h4>360P</h4>
+<span>Low Quality • MP4</span>
+</div>
+
+</div>
+
+<button id="downloadBtn">
+⬇ Download Selected Quality
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- FEATURES -->
+
+<section class="section reveal">
+
+<h1 class="section-title">
+Future Of Downloads
+</h1>
+
+<p class="section-sub">
+Designed like a premium startup product with cinematic animations and futuristic interactions.
+</p>
+
+<div class="cards">
+
+<div class="card">
+<h2>⚡ Ultra Fast</h2>
+<p>
+Lightning-fast cloud downloads with optimized servers.
+</p>
+</div>
+
+<div class="card">
+<h2>🎬 4K Quality</h2>
+<p>
+Download the highest available quality instantly.
+</p>
+</div>
+
+<div class="card">
+<h2>🔒 Secure</h2>
+<p>
+Private encrypted infrastructure for secure downloads.
+</p>
+</div>
+
+<div class="card">
+<h2>🚀 AI Preview</h2>
+<p>
+Smart reel preview with cinematic transitions.
+</p>
+</div>
+
+<div class="card">
+<h2>🌎 Global CDN</h2>
+<p>
+Fast worldwide delivery with optimized cloud edge nodes.
+</p>
+</div>
+
+<div class="card">
+<h2>✨ Premium UI</h2>
+<p>
+Modern startup-level glassmorphism interface.
+</p>
+</div>
+
+</div>
+
+</section>
+
+<!-- FOOTER -->
+
+<footer>
+
+<h2>Vyneluo</h2>
+
+<p>
+The future of Instagram reel downloading.
+</p>
+
+</footer>
+
+<script>
+
+/* ========================= */
+/* PARTICLES */
+/* ========================= */
+
+const particles =
+document.getElementById("particles");
+
+for(let i=0;i<35;i++){
+
+const particle =
+document.createElement("div");
+
+particle.classList.add("particle");
+
+particle.style.left =
+Math.random()*100 + "vw";
+
+particle.style.animationDuration =
+(8 + Math.random()*8) + "s";
+
+particle.style.animationDelay =
+Math.random()*5 + "s";
+
+particles.appendChild(particle);
+
+}
+
+/* ========================= */
+/* CURSOR */
+/* ========================= */
+
+const cursor =
+document.querySelector(".cursor");
+
+document.addEventListener(
+"mousemove",
+e=>{
+
+cursor.style.left =
+e.clientX + "px";
+
+cursor.style.top =
+e.clientY + "px";
+
+}
+);
+
+/* ========================= */
+/* REVEAL */
+/* ========================= */
+
+const reveals =
+document.querySelectorAll(".reveal");
+
+window.addEventListener(
+"scroll",
+()=>{
+
+reveals.forEach(r=>{
+
+const top =
+r.getBoundingClientRect().top;
+
+if(top < window.innerHeight - 100){
+
+r.classList.add("active");
+
+}
+
+});
+
+}
+);
+
+/* ========================= */
+/* QUALITY SELECT */
+/* ========================= */
+
+const qualityCards =
+document.querySelectorAll(".quality-card");
+
+qualityCards.forEach(card=>{
+
+card.addEventListener(
+"click",
+()=>{
+
+qualityCards.forEach(c=>
+c.classList.remove("active-quality")
+);
+
+card.classList.add("active-quality");
+
+}
+);
+
+});
+
+/* ========================= */
+/* DOWNLOADER */
+/* ========================= */
+
+const previewBtn =
+document.getElementById("previewBtn");
+
+const downloadBtn =
+document.getElementById("downloadBtn");
+
+const msg =
+document.getElementById("msg");
+
+const preview =
+document.getElementById("preview");
+
+const thumbnail =
+document.getElementById("thumbnail");
+
+const videoPreview =
+document.getElementById("videoPreview");
+
+const title =
+document.getElementById("title");
+
+const urlInput =
+document.getElementById("url");
+
+const qualityBox =
+document.getElementById("qualityBox");
+
+let currentUrl = "";
+
+/* ========================= */
+/* PREVIEW */
+/* ========================= */
+
+previewBtn.addEventListener(
+"click",
+async()=>{
+
+const url =
+urlInput.value.trim();
+
+if(!url){
+
+msg.innerHTML =
+"Paste Instagram reel URL first.";
+
+return;
+
+}
+
+currentUrl = url;
+
+msg.innerHTML =
+"Generating cinematic preview...";
+
+try{
+
+const response =
+await fetch(
+`http://localhost:3000/info?url=${encodeURIComponent(url)}`
+);
+
+const data =
+await response.json();
+
+if(!data.success){
+
+msg.innerHTML =
+"Failed to fetch preview.";
+
+return;
+
+}
+
+thumbnail.src =
+"https://images.weserv.nl/?url=" +
+encodeURIComponent(data.thumbnail);
+
+thumbnail.style.display =
+"block";
+
+videoPreview.style.display =
+"none";
+
+videoPreview.src = "";
+
+title.innerText =
+data.title;
+
+preview.style.display =
+"block";
+
+qualityBox.style.display =
+"block";
+
+msg.innerHTML =
+"Preview generated successfully ✔";
+
+}catch(err){
+
+console.error(err);
+
+msg.innerHTML =
+"Server error.";
+
+}
+
+}
+);
+
+/* ========================= */
+/* DOWNLOAD */
+/* ========================= */
+
+downloadBtn.addEventListener(
+"click",
+async()=>{
+
+msg.innerHTML =
+"Downloading reel...";
+
+try{
+
+const response =
+await fetch(
+`http://localhost:3000/download?url=${encodeURIComponent(currentUrl)}`
+);
+
+if(!response.ok){
+
+throw new Error("Download failed");
+
+}
+
+const blob =
+await response.blob();
+
+const downloadUrl =
+window.URL.createObjectURL(blob);
+
+const a =
+document.createElement("a");
+
+a.href = downloadUrl;
+
+a.download =
+"vyneluo-reel.mp4";
+
+document.body.appendChild(a);
+
+a.click();
+
+a.remove();
+
+thumbnail.style.display =
+"none";
+
+videoPreview.style.display =
+"block";
+
+videoPreview.src =
+downloadUrl;
+
+msg.innerHTML =
+"Download complete ✔";
+
+}catch(err){
+
+console.error(err);
+
+msg.innerHTML =
+"Download failed.";
+
+}
+
+}
+);
+
+</script>
+
+</body>
+</html>
