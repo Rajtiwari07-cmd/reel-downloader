@@ -6,11 +6,29 @@ const fs = require("fs");
 
 const app = express();
 
+const PORT = process.env.PORT || 3000;
+
 app.use(cors());
 
 app.use(express.json());
 
 app.use(express.static(__dirname));
+
+/* =========================
+   HOME ROUTE
+========================= */
+
+app.get("/", (req, res) => {
+
+    res.sendFile(
+        path.join(__dirname, "index.html")
+    );
+
+});
+
+/* =========================
+   DOWNLOAD FOLDER
+========================= */
 
 const downloadFolder =
     path.join(__dirname, "downloads");
@@ -18,6 +36,7 @@ const downloadFolder =
 if (!fs.existsSync(downloadFolder)) {
 
     fs.mkdirSync(downloadFolder);
+
 }
 
 /* =========================
@@ -34,11 +53,13 @@ app.get("/info", (req, res) => {
             success: false,
             error: "No URL provided"
         });
+
     }
 
-    const command = `yt-dlp -j "${url}"`;
+    const command =
+        `yt-dlp -j "${url}"`;
 
-    console.log("Fetching info:");
+    console.log("Fetching info...");
     console.log(command);
 
     exec(command, (error, stdout, stderr) => {
@@ -51,17 +72,25 @@ app.get("/info", (req, res) => {
                 success: false,
                 error: "Failed to fetch media info"
             });
+
         }
 
         try {
 
-            const data = JSON.parse(stdout);
+            const data =
+                JSON.parse(stdout);
 
             res.json({
                 success: true,
-                title: data.title || "Instagram Media",
-                thumbnail: data.thumbnail || "",
-                webpage_url: data.webpage_url || url
+                title:
+                    data.title ||
+                    "Instagram Reel",
+
+                thumbnail:
+                    data.thumbnail || "",
+
+                webpage_url:
+                    data.webpage_url || url
             });
 
         } catch (e) {
@@ -72,6 +101,7 @@ app.get("/info", (req, res) => {
                 success: false,
                 error: "JSON parse failed"
             });
+
         }
 
     });
@@ -91,12 +121,13 @@ app.get("/download", (req, res) => {
         return res.status(400).send(
             "No URL provided"
         );
+
     }
 
     const command =
         `yt-dlp --no-playlist --no-warnings --format best -o "${downloadFolder}/%(title)s.%(ext)s" "${url}"`;
 
-    console.log("Running:");
+    console.log("Downloading...");
     console.log(command);
 
     exec(command, (error, stdout, stderr) => {
@@ -112,6 +143,7 @@ app.get("/download", (req, res) => {
             return res.status(500).send(
                 stderr || "Download failed"
             );
+
         }
 
         const files =
@@ -122,19 +154,33 @@ app.get("/download", (req, res) => {
             return res.status(500).send(
                 "No file downloaded"
             );
+
         }
 
         const latestFile = files
             .map(file => ({
                 name: file,
                 time: fs.statSync(
-                    path.join(downloadFolder, file)
+                    path.join(
+                        downloadFolder,
+                        file
+                    )
                 ).mtime.getTime()
             }))
-            .sort((a, b) => b.time - a.time)[0];
+            .sort((a, b) =>
+                b.time - a.time
+            )[0];
 
         const filePath =
-            path.join(downloadFolder, latestFile.name);
+            path.join(
+                downloadFolder,
+                latestFile.name
+            );
+
+        console.log(
+            "Sending file:",
+            latestFile.name
+        );
 
         res.download(filePath);
 
@@ -143,10 +189,8 @@ app.get("/download", (req, res) => {
 });
 
 /* =========================
-   RENDER PORT FIX
+   START SERVER
 ========================= */
-
-const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
 
