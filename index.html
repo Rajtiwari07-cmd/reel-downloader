@@ -1,9 +1,16 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Reel Downloader</title><link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"><style>
+
+<title>Reel Downloader</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
 
 *{
 margin:0;
@@ -35,37 +42,36 @@ min-height:100vh;
 display:flex;
 justify-content:center;
 align-items:center;
-padding:30px 16px;
+padding:25px 16px;
 }
 
 .card{
 width:100%;
 max-width:520px;
-background:rgba(255,255,255,0.04);
+background:rgba(255,255,255,0.05);
 border:1px solid rgba(255,255,255,0.08);
-backdrop-filter:blur(20px);
+backdrop-filter:blur(18px);
 border-radius:28px;
 padding:28px;
-box-shadow:
-0 10px 40px rgba(0,0,0,0.45);
+box-shadow:0 10px 40px rgba(0,0,0,0.45);
 }
 
 .top{
 display:flex;
 justify-content:space-between;
 align-items:center;
-margin-bottom:20px;
+margin-bottom:22px;
 }
 
 .logo{
 display:flex;
 align-items:center;
-gap:12px;
+gap:14px;
 }
 
 .logo-icon{
-width:52px;
-height:52px;
+width:54px;
+height:54px;
 border-radius:18px;
 background:linear-gradient(135deg,#9333ea,#2563eb);
 display:flex;
@@ -76,7 +82,7 @@ font-weight:bold;
 }
 
 .logo h1{
-font-size:24px;
+font-size:25px;
 font-weight:800;
 letter-spacing:-0.5px;
 }
@@ -84,14 +90,14 @@ letter-spacing:-0.5px;
 .logo p{
 font-size:13px;
 opacity:0.65;
-margin-top:2px;
+margin-top:3px;
 }
 
 .theme-btn{
 width:46px;
 height:46px;
 border:none;
-border-radius:16px;
+border-radius:15px;
 background:#171d2d;
 color:white;
 font-size:18px;
@@ -104,8 +110,8 @@ transform:scale(1.05);
 }
 
 .input-wrapper{
-margin-top:10px;
 position:relative;
+margin-top:10px;
 }
 
 input{
@@ -115,7 +121,7 @@ background:#111827;
 border:1px solid rgba(255,255,255,0.08);
 border-radius:18px;
 outline:none;
-padding:0 125px 0 18px;
+padding:0 120px 0 18px;
 font-size:15px;
 color:white;
 transition:0.25s;
@@ -149,6 +155,10 @@ transition:0.25s;
 color:white;
 }
 
+.icon-btn:hover{
+transform:scale(1.06);
+}
+
 #pasteBtn{
 background:#16a34a;
 }
@@ -156,10 +166,6 @@ background:#16a34a;
 #resetBtn{
 background:#dc2626;
 display:none;
-}
-
-.icon-btn:hover{
-transform:scale(1.06);
 }
 
 .main-btn{
@@ -243,6 +249,7 @@ display:flex;
 justify-content:space-between;
 align-items:center;
 margin-bottom:16px;
+gap:10px;
 }
 
 .badge{
@@ -269,6 +276,7 @@ font-size:14px;
 width:100%;
 border-radius:22px;
 display:block;
+background:#111827;
 }
 
 #videoPreview{
@@ -347,46 +355,118 @@ input{
 font-size:14px;
 }
 
+.preview-top{
+flex-direction:column;
+align-items:flex-start;
 }
 
-</style></head><body><div class="bg"></div><div class="container"><div class="card"><div class="top"><div class="logo"><div class="logo-icon">
+select{
+width:100%;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="bg"></div>
+
+<div class="container">
+
+<div class="card">
+
+<div class="top">
+
+<div class="logo">
+
+<div class="logo-icon">
 ▶
-</div><div>
+</div>
+
+<div>
 <h1>Reel Downloader</h1>
 <p>Fast Instagram Reel Saver</p>
-</div></div><button class="theme-btn" id="themeBtn">
+</div>
+
+</div>
+
+<button class="theme-btn" id="themeBtn">
 🌙
-</button></div><div class="input-wrapper"><input
+</button>
+
+</div>
+
+<div class="input-wrapper">
+
+<input
 type="text"
 id="url"
 placeholder="Paste Instagram reel URL..."
+>
 
-«»
+<div class="actions">
 
-<div class="actions"><button class="icon-btn" id="pasteBtn">
+<button class="icon-btn" id="pasteBtn">
 📋
-</button><button class="icon-btn" id="resetBtn">
+</button>
+
+<button class="icon-btn" id="resetBtn">
 ✕
-</button></div></div><button class="main-btn" id="previewBtn">
+</button>
+
+</div>
+
+</div>
+
+<button class="main-btn" id="previewBtn">
 Generate Preview
-</button><div id="msg"></div><div class="progress" id="progressBox">
+</button>
+
+<div id="msg"></div>
+
+<div class="progress" id="progressBox">
 <div class="progress-bar" id="progressBar"></div>
-</div><div class="preview" id="preview"><div class="preview-top"><div class="badge">
+</div>
+
+<div class="preview" id="preview">
+
+<div class="preview-top">
+
+<div class="badge">
 INSTAGRAM REEL
-</div><select id="quality">
+</div>
+
+<select id="quality">
 <option>HD Quality</option>
 <option>Medium Quality</option>
 <option>Low Quality</option>
-</select></div><img id="thumbnail"><video
+</select>
+
+</div>
+
+<img id="thumbnail">
+
+<video
 id="videoPreview"
 controls
 playsinline
+></video>
 
-«</video>»
+<div class="title" id="title"></div>
 
-<div class="title" id="title"></div><button class="download-btn" id="downloadBtn">
+<button class="download-btn" id="downloadBtn">
 Download Reel
-</button></div></div></div><script>
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
 
 const API =
 "https://reel-downloader-a0pc.onrender.com";
@@ -540,7 +620,9 @@ return;
 
 }
 
-thumbnail.src = data.thumbnail;
+thumbnail.src =
+"https://images.weserv.nl/?url=" +
+encodeURIComponent(data.thumbnail);
 
 title.innerText = data.title;
 
@@ -553,7 +635,9 @@ preview.style.display = "block";
 msg.innerText =
 "Preview loaded ✔";
 
-}catch{
+}catch(error){
+
+console.log(error);
 
 msg.innerText =
 "Server error";
@@ -639,7 +723,9 @@ videoPreview.src = fileUrl;
 msg.innerText =
 "Download complete ✔";
 
-}catch{
+}catch(error){
+
+console.log(error);
 
 msg.innerText =
 "Download failed";
@@ -668,5 +754,7 @@ themeBtn.innerText = "🌙";
 
 });
 
-</script></body>
+</script>
+
+</body>
 </html>
