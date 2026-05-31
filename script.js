@@ -10,15 +10,28 @@ button.addEventListener("click", async () => {
         return;
     }
 
-    status.innerText = "Loading... Please wait.";
+    status.innerText = "Processing media link...";
+
+    // Step 1: Attempt to grab info safely without letting it crash the script
+    try {
+        const infoResponse = await fetch(`/info?url=${encodeURIComponent(url)}`);
+        if (infoResponse.ok) {
+            const infoData = await infoResponse.json();
+            console.log("Media metadata loaded successfully:", infoData.title);
+        }
+    } catch (infoErr) {
+        console.log("Preview step skipped or timed out, jumping straight to downloader.");
+    }
+
+    // Step 2: Proceed immediately to the core download route
+    status.innerText = "Downloading... Please wait.";
 
     try {
-        // CHANGED: Removed 'http://localhost:3000' so it uses relative routing. 
-        // This makes it work perfectly on Render deployment as well as local machines.
+        // Relative routing used here so it functions properly on Render deployment as well as localhost
         const response = await fetch(`/download?url=${encodeURIComponent(url)}`);
 
         if (!response.ok) {
-            throw new Error("Server error handling media conversion");
+            throw new Error("Server error processing media download file");
         }
 
         const blob = await response.blob();
@@ -26,7 +39,7 @@ button.addEventListener("click", async () => {
         const a = document.createElement("a");
 
         const contentDisposition = response.headers.get("content-disposition");
-        let filename = "instagram-media"; // fallback name
+        let filename = "instagram-media"; // Default backup filename
 
         if (contentDisposition) {
             const match = contentDisposition.match(/filename="(.+)"/);
@@ -45,6 +58,6 @@ button.addEventListener("click", async () => {
         status.innerText = "Download complete!";
     } catch (err) {
         console.error("Frontend Downloader Error:", err);
-        status.innerText = "Failed to download media. Ensure URL is correct.";
+        status.innerText = "Download failed. Check link or try a different post.";
     }
 });
