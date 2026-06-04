@@ -9,7 +9,9 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
+
 app.use(express.json());
+
 app.use(express.static(__dirname));
 
 /* =========================
@@ -131,6 +133,7 @@ app.get("/download", (req, res) => {
     exec(command, (error, stdout, stderr) => {
 
         console.log(stdout);
+
         console.log(stderr);
 
         if (error) {
@@ -179,46 +182,7 @@ app.get("/download", (req, res) => {
             latestFile.name
         );
 
-        res.download(
-            filePath,
-            latestFile.name,
-            (err) => {
-
-                if (err) {
-
-                    console.log(
-                        "Download error:",
-                        err
-                    );
-
-                    return;
-                }
-
-                fs.unlink(
-                    filePath,
-                    (unlinkErr) => {
-
-                        if (unlinkErr) {
-
-                            console.log(
-                                "Failed to delete file:",
-                                unlinkErr
-                            );
-
-                        } else {
-
-                            console.log(
-                                "Deleted file:",
-                                latestFile.name
-                            );
-
-                        }
-
-                    }
-                );
-
-            }
-        );
+        res.download(filePath);
 
     });
 
