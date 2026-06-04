@@ -1,67 +1,184 @@
-const input = document.getElementById("url");
-const button = document.getElementById("downloadBtn");
-const status = document.getElementById("status");
+const API =
+"https://reel-downloader-a0pc.onrender.com";
 
-button.addEventListener("click", async () => {
+const urlInput =
+document.getElementById("url");
 
-    const url = input.value.trim();
+const pasteBtn =
+document.getElementById("pasteBtn");
 
-    if (!url) {
-        status.innerText = "Paste Instagram link first";
-        return;
-    }
+const previewBtn =
+document.getElementById("previewBtn");
 
-    status.innerText = "Loading...";
+const downloadBtn =
+document.getElementById("downloadBtn");
 
-    try {
+const preview =
+document.getElementById("preview");
 
-        const response = await fetch(
-            `http://localhost:3000/download?url=${encodeURIComponent(url)}`
-        );
+const thumbnail =
+document.getElementById("thumbnail");
 
-        if (!response.ok) {
-            throw new Error("Server Error");
-        }
+const title =
+document.getElementById("title");
 
-        const blob = await response.blob();
+const msg =
+document.getElementById("msg");
 
-        const downloadUrl = window.URL.createObjectURL(blob);
+let currentUrl = "";
 
-        const a = document.createElement("a");
+pasteBtn.addEventListener(
+"click",
+async () => {
 
-        const contentDisposition =
-            response.headers.get("content-disposition");
+try {
 
-        let filename = "instagram-media";
+const text =
+await navigator.clipboard.readText();
 
-        if (contentDisposition) {
+urlInput.value = text;
 
-            const match = contentDisposition.match(/filename="(.+)"/);
+} catch {
 
-            if (match && match[1]) {
-                filename = match[1];
-            }
-        }
+alert(
+"Clipboard access denied"
+);
 
-        a.href = downloadUrl;
-        a.download = filename;
+}
 
-        document.body.appendChild(a);
+}
+);
 
-        a.click();
+previewBtn.addEventListener(
+"click",
+async () => {
 
-        a.remove();
+const url =
+urlInput.value.trim();
 
-        window.URL.revokeObjectURL(downloadUrl);
+if (!url) {
 
-        status.innerText = "Download complete";
+msg.innerHTML =
+"Please paste an Instagram Reel URL";
 
-    } catch (err) {
+return;
 
-        console.error(err);
+}
 
-        status.innerText = "Server Error";
+currentUrl = url;
 
-    }
+msg.innerHTML =
+"Loading preview...";
 
-});
+preview.style.display =
+"none";
+
+try {
+
+const response =
+await fetch(
+"${API}/info?url=${encodeURIComponent(url)}"
+);
+
+const data =
+await response.json();
+
+if (!data.success) {
+
+msg.innerHTML =
+"Unable to fetch preview";
+
+return;
+
+}
+
+thumbnail.src =
+"https://images.weserv.nl/?url=" +
+encodeURIComponent(
+data.thumbnail
+);
+
+title.innerText =
+data.title;
+
+preview.style.display =
+"block";
+
+msg.innerHTML =
+"Preview loaded successfully";
+
+} catch (err) {
+
+console.log(err);
+
+msg.innerHTML =
+"Server error";
+
+}
+
+}
+);
+
+downloadBtn.addEventListener(
+"click",
+async () => {
+
+if (!currentUrl) {
+
+msg.innerHTML =
+"Generate preview first";
+
+return;
+
+}
+
+msg.innerHTML =
+"Preparing download...";
+
+try {
+
+const response =
+await fetch(
+"${API}/download?url=${encodeURIComponent(currentUrl)}"
+);
+
+if (!response.ok) {
+
+throw new Error();
+
+}
+
+const blob =
+await response.blob();
+
+const fileUrl =
+URL.createObjectURL(blob);
+
+const a =
+document.createElement("a");
+
+a.href = fileUrl;
+
+a.download =
+"instagram-reel.mp4";
+
+document.body.appendChild(a);
+
+a.click();
+
+a.remove();
+
+msg.innerHTML =
+"Download complete";
+
+} catch (err) {
+
+console.log(err);
+
+msg.innerHTML =
+"Download failed";
+
+}
+
+}
+);
