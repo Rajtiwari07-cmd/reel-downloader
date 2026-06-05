@@ -1,184 +1,111 @@
-const API =
-"https://reel-downloader-a0pc.onrender.com";
+const API = "https://reel-downloader-a0pc.onrender.com";
 
-const urlInput =
-document.getElementById("url");
-
-const pasteBtn =
-document.getElementById("pasteBtn");
-
-const previewBtn =
-document.getElementById("previewBtn");
-
-const downloadBtn =
-document.getElementById("downloadBtn");
-
-const preview =
-document.getElementById("preview");
-
-const thumbnail =
-document.getElementById("thumbnail");
-
-const title =
-document.getElementById("title");
-
-const msg =
-document.getElementById("msg");
+const urlInput = document.getElementById("url");
+const pasteBtn = document.getElementById("pasteBtn");
+const previewBtn = document.getElementById("previewBtn");
+const downloadBtn = document.getElementById("downloadBtn");
+const preview = document.getElementById("preview");
+const thumbnail = document.getElementById("thumbnail");
+const title = document.getElementById("title");
+const msg = document.getElementById("msg");
 
 let currentUrl = "";
 
-pasteBtn.addEventListener(
-"click",
-async () => {
-
+pasteBtn.addEventListener("click", async () => {
 try {
-
-const text =
-await navigator.clipboard.readText();
-
+const text = await navigator.clipboard.readText();
 urlInput.value = text;
-
-} catch {
-
-alert(
-"Clipboard access denied"
-);
-
+} catch (error) {
+alert("Clipboard access denied");
 }
+});
 
-}
-);
+previewBtn.addEventListener("click", async () => {
 
-previewBtn.addEventListener(
-"click",
-async () => {
-
-const url =
-urlInput.value.trim();
+const url = urlInput.value.trim();
 
 if (!url) {
-
-msg.innerHTML =
-"Please paste an Instagram Reel URL";
-
-return;
-
+    msg.innerText = "Please paste an Instagram Reel URL";
+    return;
 }
 
 currentUrl = url;
 
-msg.innerHTML =
-"Loading preview...";
-
-preview.style.display =
-"none";
+msg.innerText = "Loading preview...";
+preview.style.display = "none";
 
 try {
 
-const response =
-await fetch(
-"${API}/info?url=${encodeURIComponent(url)}"
-);
+    const response = await fetch(
+        `${API}/info?url=${encodeURIComponent(url)}`
+    );
 
-const data =
-await response.json();
+    const data = await response.json();
 
-if (!data.success) {
+    if (!data.success) {
+        msg.innerText = "Failed to fetch preview";
+        return;
+    }
 
-msg.innerHTML =
-"Unable to fetch preview";
+    thumbnail.src = data.thumbnail;
+    title.innerText = data.title;
 
-return;
+    preview.style.display = "block";
 
-}
+    msg.innerText = "Preview loaded successfully";
 
-thumbnail.src =
-"https://images.weserv.nl/?url=" +
-encodeURIComponent(
-data.thumbnail
-);
+} catch (error) {
 
-title.innerText =
-data.title;
+    console.error(error);
 
-preview.style.display =
-"block";
-
-msg.innerHTML =
-"Preview loaded successfully";
-
-} catch (err) {
-
-console.log(err);
-
-msg.innerHTML =
-"Server error";
+    msg.innerText = "Server error";
 
 }
 
-}
-);
+});
 
-downloadBtn.addEventListener(
-"click",
-async () => {
+downloadBtn.addEventListener("click", async () => {
 
 if (!currentUrl) {
-
-msg.innerHTML =
-"Generate preview first";
-
-return;
-
+    msg.innerText = "Generate preview first";
+    return;
 }
 
-msg.innerHTML =
-"Preparing download...";
+msg.innerText = "Downloading...";
 
 try {
 
-const response =
-await fetch(
-"${API}/download?url=${encodeURIComponent(currentUrl)}"
-);
+    const response = await fetch(
+        `${API}/download?url=${encodeURIComponent(currentUrl)}`
+    );
 
-if (!response.ok) {
+    if (!response.ok) {
+        throw new Error("Download failed");
+    }
 
-throw new Error();
+    const blob = await response.blob();
 
-}
+    const fileUrl = URL.createObjectURL(blob);
 
-const blob =
-await response.blob();
+    const a = document.createElement("a");
 
-const fileUrl =
-URL.createObjectURL(blob);
+    a.href = fileUrl;
+    a.download = "instagram-reel.mp4";
 
-const a =
-document.createElement("a");
+    document.body.appendChild(a);
 
-a.href = fileUrl;
+    a.click();
 
-a.download =
-"instagram-reel.mp4";
+    document.body.removeChild(a);
 
-document.body.appendChild(a);
+    msg.innerText = "Download complete";
 
-a.click();
+} catch (error) {
 
-a.remove();
+    console.error(error);
 
-msg.innerHTML =
-"Download complete";
-
-} catch (err) {
-
-console.log(err);
-
-msg.innerHTML =
-"Download failed";
+    msg.innerText = "Download failed";
 
 }
 
-}
-);
+});
