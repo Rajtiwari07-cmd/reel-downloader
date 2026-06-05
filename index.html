@@ -1,29 +1,760 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Reel Downloader</title>
-<link rel="stylesheet" href="style.css">
-</head><body><div class="container"><h1>Instagram Reel Downloader</h1><p>Download Instagram reels instantly.</p><input
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Inter',sans-serif;
+}
+
+body{
+background:#0b0f19;
+color:white;
+min-height:100vh;
+overflow-x:hidden;
+}
+
+.bg{
+position:fixed;
+inset:0;
+background:
+radial-gradient(circle at top left,#7c3aed22,transparent 30%),
+radial-gradient(circle at bottom right,#2563eb22,transparent 30%),
+#0b0f19;
+z-index:-1;
+}
+
+.container{
+width:100%;
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+padding:25px 16px;
+}
+
+.card{
+width:100%;
+max-width:520px;
+background:rgba(255,255,255,0.05);
+border:1px solid rgba(255,255,255,0.08);
+backdrop-filter:blur(18px);
+border-radius:28px;
+padding:28px;
+box-shadow:0 10px 40px rgba(0,0,0,0.45);
+}
+
+.top{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:22px;
+}
+
+.logo{
+display:flex;
+align-items:center;
+gap:14px;
+}
+
+.logo-icon{
+width:54px;
+height:54px;
+border-radius:18px;
+background:linear-gradient(135deg,#9333ea,#2563eb);
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:24px;
+font-weight:bold;
+}
+
+.logo h1{
+font-size:25px;
+font-weight:800;
+letter-spacing:-0.5px;
+}
+
+.logo p{
+font-size:13px;
+opacity:0.65;
+margin-top:3px;
+}
+
+.theme-btn{
+width:46px;
+height:46px;
+border:none;
+border-radius:15px;
+background:#171d2d;
+color:white;
+font-size:18px;
+cursor:pointer;
+transition:0.25s;
+}
+
+.theme-btn:hover{
+transform:scale(1.05);
+}
+
+.input-wrapper{
+position:relative;
+margin-top:10px;
+}
+
+input{
+width:100%;
+height:62px;
+background:#111827;
+border:1px solid rgba(255,255,255,0.08);
+border-radius:18px;
+outline:none;
+padding:0 120px 0 18px;
+font-size:15px;
+color:white;
+transition:0.25s;
+}
+
+input:focus{
+border-color:#7c3aed;
+box-shadow:0 0 0 4px #7c3aed22;
+}
+
+.actions{
+position:absolute;
+right:10px;
+top:50%;
+transform:translateY(-50%);
+display:flex;
+gap:8px;
+}
+
+.icon-btn{
+width:42px;
+height:42px;
+border:none;
+border-radius:14px;
+cursor:pointer;
+font-size:16px;
+display:flex;
+align-items:center;
+justify-content:center;
+transition:0.25s;
+color:white;
+}
+
+.icon-btn:hover{
+transform:scale(1.06);
+}
+
+#pasteBtn{
+background:#16a34a;
+}
+
+#resetBtn{
+background:#dc2626;
+display:none;
+}
+
+.main-btn{
+width:100%;
+height:58px;
+border:none;
+border-radius:18px;
+margin-top:16px;
+background:linear-gradient(135deg,#9333ea,#2563eb);
+color:white;
+font-size:16px;
+font-weight:700;
+cursor:pointer;
+transition:0.25s;
+}
+
+.main-btn:hover{
+transform:translateY(-2px);
+}
+
+#msg{
+margin-top:18px;
+font-size:14px;
+text-align:center;
+min-height:20px;
+opacity:0.9;
+}
+
+.loader{
+width:42px;
+height:42px;
+border:4px solid rgba(255,255,255,0.15);
+border-top:4px solid white;
+border-radius:50%;
+margin:12px auto;
+animation:spin 1s linear infinite;
+}
+
+@keyframes spin{
+100%{
+transform:rotate(360deg);
+}
+}
+
+.progress{
+width:100%;
+height:8px;
+background:#1e293b;
+border-radius:999px;
+margin-top:18px;
+overflow:hidden;
+display:none;
+}
+
+.progress-bar{
+height:100%;
+width:0%;
+background:linear-gradient(90deg,#9333ea,#2563eb);
+transition:0.25s;
+}
+
+.preview{
+display:none;
+margin-top:24px;
+animation:fade 0.35s ease;
+}
+
+@keyframes fade{
+from{
+opacity:0;
+transform:translateY(10px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+
+.preview-top{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:16px;
+gap:10px;
+}
+
+.badge{
+padding:8px 14px;
+border-radius:999px;
+background:#171d2d;
+font-size:12px;
+font-weight:700;
+letter-spacing:0.5px;
+}
+
+select{
+background:#171d2d;
+color:white;
+border:none;
+outline:none;
+height:42px;
+padding:0 14px;
+border-radius:12px;
+font-size:14px;
+}
+
+#thumbnail{
+width:100%;
+border-radius:22px;
+display:block;
+background:#111827;
+}
+
+#videoPreview{
+width:100%;
+border-radius:22px;
+display:none;
+background:black;
+}
+
+.title{
+margin-top:16px;
+font-size:15px;
+line-height:1.5;
+opacity:0.9;
+word-break:break-word;
+}
+
+.download-btn{
+width:100%;
+height:56px;
+border:none;
+border-radius:18px;
+margin-top:18px;
+background:white;
+color:black;
+font-size:15px;
+font-weight:800;
+cursor:pointer;
+transition:0.25s;
+}
+
+.download-btn:hover{
+transform:translateY(-2px);
+}
+
+.light-mode{
+background:#f3f4f6;
+color:black;
+}
+
+.light-mode .card{
+background:white;
+border:1px solid #e5e7eb;
+}
+
+.light-mode input{
+background:#f9fafb;
+color:black;
+border:1px solid #d1d5db;
+}
+
+.light-mode .theme-btn,
+.light-mode select,
+.light-mode .badge{
+background:#f3f4f6;
+color:black;
+}
+
+.light-mode .download-btn{
+background:black;
+color:white;
+}
+
+@media(max-width:520px){
+
+.card{
+padding:22px;
+border-radius:24px;
+}
+
+.logo h1{
+font-size:21px;
+}
+
+input{
+font-size:14px;
+}
+
+.preview-top{
+flex-direction:column;
+align-items:flex-start;
+}
+
+select{
+width:100%;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="bg"></div>
+
+<div class="container">
+
+<div class="card">
+
+<div class="top">
+
+<div class="logo">
+
+<div class="logo-icon">
+▶
+</div>
+
+<div>
+<h1>Reel Downloader</h1>
+<p>Fast Instagram Reel Saver</p>
+</div>
+
+</div>
+
+<button class="theme-btn" id="themeBtn">
+🌙
+</button>
+
+</div>
+
+<div class="input-wrapper">
+
+<input
 type="text"
 id="url"
-placeholder="Paste Instagram Reel URL..."
+placeholder="Paste Instagram reel URL..."
+>
 
-«»
+<div class="actions">
 
-<br><br>
+<button class="icon-btn" id="pasteBtn">
+📋
+</button>
 
-<button id="pasteBtn">
-Paste
-</button><button id="previewBtn">
+<button class="icon-btn" id="resetBtn">
+✕
+</button>
+
+</div>
+
+</div>
+
+<button class="main-btn" id="previewBtn">
 Generate Preview
-</button><div id="msg"></div><br><div id="preview" style="display:none;"><img
-id="thumbnail"
-style="width:100%;max-width:400px;border-radius:12px;"
+</button>
 
-«»
+<div id="msg"></div>
 
-<h3 id="title"></h3><br><button id="downloadBtn">
+<div class="progress" id="progressBox">
+<div class="progress-bar" id="progressBar"></div>
+</div>
+
+<div class="preview" id="preview">
+
+<div class="preview-top">
+
+<div class="badge">
+INSTAGRAM REEL
+</div>
+
+<select id="quality">
+<option>HD Quality</option>
+<option>Medium Quality</option>
+<option>Low Quality</option>
+</select>
+
+</div>
+
+<img id="thumbnail">
+
+<video
+id="videoPreview"
+controls
+playsinline
+></video>
+
+<div class="title" id="title"></div>
+
+<button class="download-btn" id="downloadBtn">
 Download Reel
-</button></div></div><script src="script.js"></script></body>
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+const API =
+"https://reel-downloader-a0pc.onrender.com";
+
+const urlInput =
+document.getElementById("url");
+
+const resetBtn =
+document.getElementById("resetBtn");
+
+const pasteBtn =
+document.getElementById("pasteBtn");
+
+const previewBtn =
+document.getElementById("previewBtn");
+
+const downloadBtn =
+document.getElementById("downloadBtn");
+
+const preview =
+document.getElementById("preview");
+
+const thumbnail =
+document.getElementById("thumbnail");
+
+const videoPreview =
+document.getElementById("videoPreview");
+
+const title =
+document.getElementById("title");
+
+const msg =
+document.getElementById("msg");
+
+const progressBox =
+document.getElementById("progressBox");
+
+const progressBar =
+document.getElementById("progressBar");
+
+const themeBtn =
+document.getElementById("themeBtn");
+
+let currentUrl = "";
+
+urlInput.addEventListener("input",()=>{
+
+if(urlInput.value.trim() !== ""){
+
+resetBtn.style.display = "flex";
+
+}else{
+
+resetBtn.style.display = "none";
+
+}
+
+});
+
+pasteBtn.addEventListener("click",async()=>{
+
+try{
+
+const text =
+await navigator.clipboard.readText();
+
+urlInput.value = text;
+
+if(text.trim() !== ""){
+
+resetBtn.style.display = "flex";
+
+}
+
+}catch{
+
+alert("Clipboard permission denied");
+
+}
+
+});
+
+function resetAll(){
+
+urlInput.value = "";
+
+preview.style.display = "none";
+
+thumbnail.src = "";
+
+videoPreview.src = "";
+
+videoPreview.style.display = "none";
+
+thumbnail.style.display = "block";
+
+title.innerText = "";
+
+msg.innerText = "";
+
+progressBox.style.display = "none";
+
+progressBar.style.width = "0%";
+
+resetBtn.style.display = "none";
+
+currentUrl = "";
+
+}
+
+resetBtn.addEventListener("click",resetAll);
+
+previewBtn.addEventListener("click",async()=>{
+
+const url = urlInput.value.trim();
+
+if(!url){
+
+msg.innerText =
+"Paste Instagram reel link";
+
+return;
+
+}
+
+currentUrl = url;
+
+preview.style.display = "none";
+
+msg.innerHTML = `
+<div class="loader"></div>
+<p>Fetching preview...</p>
+`;
+
+try{
+
+const response =
+await fetch(
+`${API}/info?url=${encodeURIComponent(url)}`
+);
+
+const data =
+await response.json();
+
+if(!data.success){
+
+msg.innerText =
+"Failed to fetch preview";
+
+return;
+
+}
+
+thumbnail.src =
+"https://images.weserv.nl/?url=" +
+encodeURIComponent(data.thumbnail);
+
+title.innerText = data.title;
+
+videoPreview.style.display = "none";
+
+thumbnail.style.display = "block";
+
+preview.style.display = "block";
+
+msg.innerText =
+"Preview loaded ✔";
+
+}catch(error){
+
+console.log(error);
+
+msg.innerText =
+"Server error";
+
+}
+
+});
+
+downloadBtn.addEventListener("click",async()=>{
+
+msg.innerHTML = `
+<div class="loader"></div>
+<p>Downloading reel...</p>
+`;
+
+progressBox.style.display = "block";
+
+progressBar.style.width = "0%";
+
+let progress = 0;
+
+const interval =
+setInterval(()=>{
+
+if(progress < 90){
+
+progress += 10;
+
+progressBar.style.width =
+progress + "%";
+
+}
+
+},250);
+
+try{
+
+const response =
+await fetch(
+`${API}/download?url=${encodeURIComponent(currentUrl)}`
+);
+
+if(!response.ok){
+
+throw new Error();
+
+}
+
+const blob =
+await response.blob();
+
+clearInterval(interval);
+
+progressBar.style.width = "100%";
+
+const fileUrl =
+URL.createObjectURL(blob);
+
+const a =
+document.createElement("a");
+
+a.href = fileUrl;
+
+a.download =
+"instagram-reel.mp4";
+
+document.body.appendChild(a);
+
+a.click();
+
+a.remove();
+
+setTimeout(()=>{
+
+thumbnail.style.display = "none";
+
+videoPreview.style.display = "block";
+
+videoPreview.src = fileUrl;
+
+},700);
+
+msg.innerText =
+"Download complete ✔";
+
+}catch(error){
+
+console.log(error);
+
+msg.innerText =
+"Download failed";
+
+}
+
+});
+
+themeBtn.addEventListener("click",()=>{
+
+document.body.classList.toggle("light-mode");
+
+if(
+document.body.classList.contains(
+"light-mode"
+)
+){
+
+themeBtn.innerText = "☀";
+
+}else{
+
+themeBtn.innerText = "🌙";
+
+}
+
+});
+
+</script>
+
+</body>
 </html>
