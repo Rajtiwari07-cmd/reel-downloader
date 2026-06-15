@@ -97,7 +97,14 @@ return;
 }
 
 thumbnail.src =
-data.thumbnail;
+"https://images.weserv.nl/?url=" +
+encodeURIComponent(
+data.thumbnail.replace(/^https?:\/\//, "")
+);
+
+thumbnail.onerror = () => {
+    console.log("Thumbnail failed:", data.thumbnail);
+};
 
 title.innerText =
 data.title || "Instagram Reel";
