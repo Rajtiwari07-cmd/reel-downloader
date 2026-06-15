@@ -11,6 +11,8 @@ const videoPreview = document.getElementById("videoPreview");
 const title = document.getElementById("title");
 
 const msg = document.getElementById("msg");
+const quality =
+document.getElementById("quality");
 
 const progressContainer =
 document.querySelector(".progress-container");
@@ -79,9 +81,12 @@ preview.style.display =
 
 try {
 
+const selectedQuality =
+quality.value;
+
 const response =
 await fetch(
-`${API}/info?url=${encodeURIComponent(url)}`
+`${API}/download?url=${encodeURIComponent(currentUrl)}&quality=${selectedQuality}`
 );
 
 const data =
