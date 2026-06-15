@@ -1,177 +1,151 @@
-const API =
-"https://reel-downloader-a0pc.onrender.com";
+const express = require("express");
+const cors = require("cors");
+const { exec } = require("child_process");
+const path = require("path");
+const fs = require("fs");
 
-const urlInput =
-document.getElementById("url");
+const app = express();
 
-const pasteBtn =
-document.getElementById("pasteBtn");
+app.use(cors());
 
-const previewBtn =
-document.getElementById("previewBtn");
+app.use(express.json());
 
-const downloadBtn =
-document.getElementById("downloadBtn");
+app.use(express.static(__dirname));
 
-const preview =
-document.getElementById("preview");
+const downloadFolder =
+    path.join(__dirname, "downloads");
 
-const thumbnail =
-document.getElementById("thumbnail");
+if (!fs.existsSync(downloadFolder)) {
 
-const title =
-document.getElementById("title");
-
-const msg =
-document.getElementById("msg");
-
-let currentUrl = "";
-
-pasteBtn.addEventListener(
-"click",
-async () => {
-
-try {
-
-const text =
-await navigator.clipboard.readText();
-
-urlInput.value = text;
-
-} catch {
-
-alert(
-"Clipboard access denied"
-);
-
+    fs.mkdirSync(downloadFolder);
 }
 
-}
-);
+/* =========================
+   FETCH MEDIA INFO
+========================= */
 
-previewBtn.addEventListener(
-"click",
-async () => {
+app.get("/info", (req, res) => {
 
-const url =
-urlInput.value.trim();
+    const url = req.query.url;
 
-if (!url) {
+    if (!url) {
 
-msg.innerText =
-"Paste a Reel URL";
+        return res.status(400).json({
+            success: false,
+            error: "No URL provided"
+        });
+    }
 
-return;
+    const command = `yt-dlp -j "${url}"`;
 
-}
+    console.log("Fetching info:");
+    console.log(command);
 
-currentUrl = url;
+    exec(command, (error, stdout, stderr) => {
 
-msg.innerText =
-"Loading preview...";
+        if (error) {
 
-preview.style.display =
-"none";
+            console.log(stderr);
 
-try {
+            return res.status(500).json({
+                success: false,
+                error: "Failed to fetch media info"
+            });
+        }
 
-const response =
-await fetch(
-"${API}/info?url=${encodeURIComponent(url)}"
-);
+        try {
 
-const data =
-await response.json();
+            const data = JSON.parse(stdout);
 
-if (!data.success) {
+            res.json({
+                success: true,
+                title: data.title || "Instagram Media",
+                thumbnail: data.thumbnail || "",
+                webpage_url: data.webpage_url || url
+            });
 
-msg.innerText =
-"Failed to fetch preview";
+        } catch (e) {
 
-return;
+            console.log(e);
 
-}
+            res.status(500).json({
+                success: false,
+                error: "JSON parse failed"
+            });
+        }
 
-thumbnail.src = data.thumbnail;
+    });
 
-title.innerText =
-data.title;
+});
 
-preview.style.display =
-"block";
+/* =========================
+   DOWNLOAD MEDIA
+========================= */
 
-msg.innerText =
-"Preview loaded";
+app.get("/download", (req, res) => {
 
-} catch (err) {
+    const url = req.query.url;
 
-console.log(err);
+    if (!url) {
 
-msg.innerText =
-"Server error";
+        return res.status(400).send(
+            "No URL provided"
+        );
+    }
 
-}
+    const command =
+        `yt-dlp --no-playlist --no-warnings --format best -o "${downloadFolder}/%(title)s.%(ext)s" "${url}"`;
 
-}
-);
+    console.log("Running:");
+    console.log(command);
 
-downloadBtn.addEventListener(
-"click",
-async () => {
+    exec(command, (error, stdout, stderr) => {
 
-if (!currentUrl) {
+        console.log(stdout);
 
-msg.innerText =
-"Generate preview first";
+        console.log(stderr);
 
-return;
+        if (error) {
 
-}
+            console.log(error);
 
-try {
+            return res.status(500).send(
+                stderr || "Download failed"
+            );
+        }
 
-const response =
-await fetch(
-"${API}/download?url=${encodeURIComponent(currentUrl)}"
-);
+        const files =
+            fs.readdirSync(downloadFolder);
 
-if (!response.ok) {
+        if (files.length === 0) {
 
-throw new Error();
+            return res.status(500).send(
+                "No file downloaded"
+            );
+        }
 
-}
+        const latestFile = files
+            .map(file => ({
+                name: file,
+                time: fs.statSync(
+                    path.join(downloadFolder, file)
+                ).mtime.getTime()
+            }))
+            .sort((a, b) => b.time - a.time)[0];
 
-const blob =
-await response.blob();
+        const filePath =
+            path.join(downloadFolder, latestFile.name);
 
-const fileUrl =
-URL.createObjectURL(blob);
+        res.download(filePath);
 
-const a =
-document.createElement("a");
+    });
 
-a.href = fileUrl;
+});
 
-a.download =
-"instagram-reel.mp4";
+app.listen(3000, () => {
 
-document.body.appendChild(a);
+    console.log(
+        "Server running on http://localhost:3000"
+    );
 
-a.click();
-
-a.remove();
-
-msg.innerText =
-"Download complete";
-
-} catch (err) {
-
-console.log(err);
-
-msg.innerText =
-"Download failed";
-
-}
-
-}
-);
+});
