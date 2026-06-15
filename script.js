@@ -1,132 +1,251 @@
-.* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
+const API = "https://reel-downloader-a0pc.onrender.com";
+
+const urlInput = document.getElementById("url");
+const pasteBtn = document.getElementById("pasteBtn");
+const previewBtn = document.getElementById("previewBtn");
+const downloadBtn = document.getElementById("downloadBtn");
+
+const preview = document.getElementById("preview");
+const thumbnail = document.getElementById("thumbnail");
+const videoPreview = document.getElementById("videoPreview");
+const title = document.getElementById("title");
+
+const msg = document.getElementById("msg");
+
+const progressContainer =
+document.querySelector(".progress-container");
+
+const progressBar =
+document.querySelector(".progress-bar");
+
+const themeBtn =
+document.getElementById("themeBtn");
+
+let currentUrl = "";
+
+/* PASTE BUTTON */
+
+if (pasteBtn) {
+
+pasteBtn.addEventListener(
+"click",
+async () => {
+
+try {
+
+const text =
+await navigator.clipboard.readText();
+
+urlInput.value = text;
+
+} catch (err) {
+
+msg.innerText =
+"Clipboard access denied";
+
 }
 
-body {
-  height: 100vh;
-  overflow: hidden;
+});
+
 }
 
-/* Animated gradient background */
-.bg {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(-45deg, #0f172a, #1e3a8a, #7c3aed, #0ea5e9);
-  background-size: 400% 400%;
-  animation: gradient 10s ease infinite;
-  z-index: -1;
+/* PREVIEW */
+
+if (previewBtn) {
+
+previewBtn.addEventListener(
+"click",
+async () => {
+
+const url =
+urlInput.value.trim();
+
+if (!url) {
+
+msg.innerText =
+"Please paste an Instagram URL";
+
+return;
+
 }
 
-@keyframes gradient {
-  0% {background-position:0% 50%;}
-  50% {background-position:100% 50%;}
-  100% {background-position:0% 50%;}
+currentUrl = url;
+
+msg.innerText =
+"Loading preview...";
+
+preview.style.display =
+"none";
+
+try {
+
+const response =
+await fetch(
+`${API}/info?url=${encodeURIComponent(url)}`
+);
+
+const data =
+await response.json();
+
+if (!data.success) {
+
+msg.innerText =
+"Failed to fetch preview";
+
+return;
+
 }
 
-.container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+thumbnail.src =
+data.thumbnail;
+
+title.innerText =
+data.title || "Instagram Reel";
+
+videoPreview.style.display =
+"none";
+
+thumbnail.style.display =
+"block";
+
+preview.style.display =
+"block";
+
+msg.innerText =
+"Preview loaded successfully";
+
+} catch (err) {
+
+console.error(err);
+
+msg.innerText =
+"Server error while loading preview";
+
 }
 
-.glass-card {
-  width: 90%;
-  max-width: 420px;
-  padding: 25px;
-  border-radius: 20px;
+});
 
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
-
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-
-  text-align: center;
-  color: white;
-
-  animation: pop 0.6s ease;
 }
 
-@keyframes pop {
-  from { transform: scale(0.9); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
+/* DOWNLOAD */
+
+if (downloadBtn) {
+
+downloadBtn.addEventListener(
+"click",
+async () => {
+
+if (!currentUrl) {
+
+msg.innerText =
+"Generate preview first";
+
+return;
+
 }
 
-h1 {
-  font-size: 22px;
-  margin-bottom: 8px;
+progressContainer.style.display =
+"block";
+
+progressBar.style.width =
+"0%";
+
+let progress = 0;
+
+const fakeProgress =
+setInterval(() => {
+
+if (progress < 90) {
+
+progress += 10;
+
+progressBar.style.width =
+progress + "%";
+
 }
 
-p {
-  font-size: 13px;
-  opacity: 0.8;
-  margin-bottom: 20px;
+}, 300);
+
+try {
+
+const response =
+await fetch(
+`${API}/download?url=${encodeURIComponent(currentUrl)}`
+);
+
+if (!response.ok) {
+
+throw new Error(
+"Download failed"
+);
+
 }
 
-input {
-  width: 100%;
-  padding: 12px;
-  border-radius: 12px;
-  border: none;
-  outline: none;
-  margin-bottom: 15px;
+const blob =
+await response.blob();
+
+clearInterval(fakeProgress);
+
+progressBar.style.width =
+"100%";
+
+const fileUrl =
+window.URL.createObjectURL(blob);
+
+const a =
+document.createElement("a");
+
+a.href = fileUrl;
+
+a.download =
+"vynelu-reel.mp4";
+
+document.body.appendChild(a);
+
+a.click();
+
+a.remove();
+
+videoPreview.src =
+fileUrl;
+
+videoPreview.style.display =
+"block";
+
+thumbnail.style.display =
+"none";
+
+msg.innerText =
+"Download completed";
+
+} catch (err) {
+
+clearInterval(fakeProgress);
+
+console.error(err);
+
+msg.innerText =
+"Download failed";
+
 }
 
-button {
-  width: 100%;
-  padding: 12px;
-  border: none;
-  border-radius: 12px;
-  background: #7c3aed;
-  color: white;
-  font-size: 15px;
-  cursor: pointer;
-  transition: 0.3s;
+});
+
 }
 
-button:hover {
-  transform: scale(1.03);
-  background: #6d28d9;
-}
+/* DARK MODE */
 
-#msg {
-  margin-top: 10px;
-  font-size: 13px;
-}
+if (themeBtn) {
 
-.hidden {
-  display: none;
-}
+themeBtn.addEventListener(
+"click",
+() => {
 
-/* Preview box */
-#previewBox {
-  margin-top: 15px;
-  animation: fade 0.5s ease;
-}
+document.body.classList.toggle(
+"dark-mode"
+);
 
-@keyframes fade {
-  from {opacity: 0;}
-  to {opacity: 1;}
 }
+);
 
-video {
-  width: 100%;
-  border-radius: 12px;
-  margin-bottom: 10px;
-}
-
-.download-btn {
-  display: block;
-  padding: 10px;
-  background: #22c55e;
-  color: white;
-  border-radius: 10px;
-  text-decoration: none;
-  font-weight: bold;
 }

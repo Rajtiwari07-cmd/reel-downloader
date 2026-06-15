@@ -1,26 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>VYNELUO - Instagram Reel Downloader</title>
+<title>VYNELUO</title>
 
-<meta
-name="description"
-content="Download Instagram Reels Videos Photos and Stories instantly with VYNELUO."
->
+<meta name="description" content="Download Instagram reels videos photos and stories instantly.">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
-
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<link
-href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
-rel="stylesheet"
->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="style.css">
 
@@ -28,13 +20,13 @@ rel="stylesheet"
 
 <body>
 
-<div class="bg"></div>
+<div class="bg-orb orb1"></div>
+<div class="bg-orb orb2"></div>
+<div class="bg-orb orb3"></div>
 
 <header>
 
-<div class="container">
-
-<nav>
+<div class="container nav">
 
 <div class="logo">
 
@@ -48,11 +40,7 @@ VYNELUO
 
 </div>
 
-<div class="nav-links">
-
-<a href="#home">
-Home
-</a>
+<nav>
 
 <a href="#features">
 Features
@@ -66,78 +54,68 @@ How It Works
 FAQ
 </a>
 
-</div>
-
 </nav>
 
 </div>
 
 </header>
 
-<section
-id="home"
-class="hero"
->
+<section class="hero">
 
 <div class="container">
 
 <div class="hero-badge">
 
-⚡ Fast Instagram Downloader
+⚡ Fast • Secure • Unlimited
 
 </div>
 
 <h1>
 
-Download Instagram Reels
+Download Instagram Content
 
 <span>
-Instantly
+Without Limits
 </span>
 
 </h1>
 
 <p>
 
-Download Instagram reels videos photos and stories
-without watermark in high quality.
+Download Instagram Reels Videos Photos Stories and Carousel posts instantly in high quality with VYNELUO.
 
 </p>
 
-<div class="downloader">
+<div class="download-card">
 
-<div class="input-area">
+<div class="input-wrapper">
 
 <input
 type="text"
 id="url"
-placeholder="Paste Instagram Reel URL Here..."
+placeholder="Paste Instagram URL here..."
 >
 
 <button
 id="pasteBtn"
 class="paste-btn"
 >
-
 Paste
-
-</button>
-
-<button
-id="previewBtn"
-class="download-btn"
->
-
-Generate Preview
-
 </button>
 
 </div>
 
+<button
+id="previewBtn"
+class="main-btn"
+>
+Generate Preview
+</button>
+
 <div id="msg"></div>
 
 <div
-class="progress"
+class="progress-container"
 id="progressBox"
 >
 
@@ -149,22 +127,26 @@ id="progressBar"
 </div>
 
 <div
-class="preview"
 id="preview"
+class="preview-card"
 >
 
-<div class="preview-header">
+<img
+id="thumbnail"
+alt="Preview"
+>
 
-<div class="badge">
+<video
+id="videoPreview"
+controls
+></video>
 
-INSTAGRAM REEL
-
-</div>
+<h3 id="title"></h3>
 
 <select id="quality">
 
 <option>
-HD Quality
+Best Quality
 </option>
 
 <option>
@@ -177,32 +159,18 @@ Low Quality
 
 </select>
 
-</div>
-
-<img id="thumbnail">
-
-<video
-id="videoPreview"
-controls
-playsinline
-></video>
-
-<h3 id="title"></h3>
-
 <button
 id="downloadBtn"
-class="download-real-btn"
+class="download-btn"
 >
-
-Download Reel
-
+Download Now
 </button>
 
 </div>
 
 </div>
 
-<div class="stats">
+<div class="hero-stats">
 
 <div class="stat">
 
@@ -257,113 +225,66 @@ Available
 </div>
 
 </section>
-<section
-id="features"
-class="features"
->
+<section id="features" class="features">
 
 <div class="container">
 
 <h2 class="section-title">
-Why Choose VYNELUO?
+Why Choose VYNELUO
 </h2>
+
+<p class="section-subtitle">
+Built for speed quality and simplicity.
+</p>
 
 <div class="feature-grid">
 
 <div class="feature-card">
-
-<div class="feature-icon">
-⚡
-</div>
-
-<h3>
-Lightning Fast
-</h3>
-
+<div class="feature-icon">⚡</div>
+<h3>Ultra Fast</h3>
 <p>
-Download reels in seconds with powerful cloud servers.
+Optimized servers deliver your content within seconds.
 </p>
-
 </div>
 
 <div class="feature-card">
-
-<div class="feature-icon">
-🎬
-</div>
-
-<h3>
-HD Quality
-</h3>
-
+<div class="feature-icon">🎬</div>
+<h3>High Quality</h3>
 <p>
-Get the highest available video quality every time.
+Download videos and reels in the best available quality.
 </p>
-
 </div>
 
 <div class="feature-card">
-
-<div class="feature-icon">
-🔒
-</div>
-
-<h3>
-Secure
-</h3>
-
+<div class="feature-icon">🔒</div>
+<h3>Secure</h3>
 <p>
 No login required and no personal information stored.
 </p>
-
 </div>
 
 <div class="feature-card">
-
-<div class="feature-icon">
-📱
-</div>
-
-<h3>
-Mobile Friendly
-</h3>
-
+<div class="feature-icon">📱</div>
+<h3>Mobile Friendly</h3>
 <p>
 Works perfectly on Android iPhone tablet and desktop.
 </p>
-
 </div>
 
 <div class="feature-card">
-
-<div class="feature-icon">
-☁️
-</div>
-
-<h3>
-Cloud Powered
-</h3>
-
+<div class="feature-icon">☁️</div>
+<h3>Cloud Powered</h3>
 <p>
-Fast server processing for instant downloads.
+Reliable infrastructure with high availability.
 </p>
-
 </div>
 
 <div class="feature-card">
-
-<div class="feature-icon">
-🆓
-</div>
-
-<h3>
-Free Forever
-</h3>
-
+<div class="feature-icon">🆓</div>
+<h3>Free Forever</h3>
 <p>
-No subscription no hidden charges completely free.
+Unlimited downloads without subscriptions.
 </p>
-
 </div>
 
 </div>
@@ -372,10 +293,7 @@ No subscription no hidden charges completely free.
 
 </section>
 
-<section
-id="how"
-class="how-it-works"
->
+<section id="how" class="how">
 
 <div class="container">
 
@@ -396,7 +314,7 @@ Copy Link
 </h3>
 
 <p>
-Open Instagram and copy the reel URL.
+Open Instagram and copy the Reel Photo Story or Video link.
 </p>
 
 </div>
@@ -412,7 +330,7 @@ Paste URL
 </h3>
 
 <p>
-Paste the Instagram link into VYNELUO.
+Paste the Instagram URL into the VYNELUO downloader.
 </p>
 
 </div>
@@ -428,7 +346,7 @@ Download
 </h3>
 
 <p>
-Generate preview and download instantly.
+Generate preview and save your content instantly.
 </p>
 
 </div>
@@ -439,10 +357,7 @@ Generate preview and download instantly.
 
 </section>
 
-<section
-id="faq"
-class="faq"
->
+<section id="faq" class="faq">
 
 <div class="container">
 
@@ -459,7 +374,7 @@ Is VYNELUO free?
 </h3>
 
 <p>
-Yes VYNELUO is completely free to use.
+Yes. VYNELUO is completely free to use.
 </p>
 
 </div>
@@ -471,7 +386,7 @@ Do I need an Instagram account?
 </h3>
 
 <p>
-No login is required for public content.
+No. Public content can be downloaded without logging in.
 </p>
 
 </div>
@@ -483,7 +398,7 @@ Can I download HD videos?
 </h3>
 
 <p>
-Yes the highest available quality is selected automatically.
+Yes. The best available quality is selected automatically.
 </p>
 
 </div>
@@ -495,7 +410,19 @@ Does it work on mobile?
 </h3>
 
 <p>
-Yes Android iPhone tablet and desktop are supported.
+Absolutely. Android iPhone and tablets are fully supported.
+</p>
+
+</div>
+
+<div class="faq-item">
+
+<h3>
+Is my data stored?
+</h3>
+
+<p>
+No. We do not store download history or personal information.
 </p>
 
 </div>
@@ -508,24 +435,24 @@ Yes Android iPhone tablet and desktop are supported.
 
 <footer>
 
-<div class="container">
+<div class="container footer-content">
 
 <div class="footer-logo">
 VYNELUO
 </div>
 
 <p>
-Fast Instagram Reel Downloader.
+Modern Instagram downloader built for speed simplicity and reliability.
 </p>
 
 <div class="footer-links">
 
-<a href="#home">
-Home
-</a>
-
 <a href="#features">
 Features
+</a>
+
+<a href="#how">
+How It Works
 </a>
 
 <a href="#faq">
@@ -535,9 +462,7 @@ FAQ
 </div>
 
 <p class="copyright">
-
-© 2026 VYNELUO. All Rights Reserved.
-
+© 2026 VYNELUO. All rights reserved.
 </p>
 
 </div>
