@@ -101,22 +101,17 @@ return;
 
 }
 
-if (data.thumbnail) {
+thumbnail.src = data.thumbnail;
 
-thumbnail.src =
-"https://images.weserv.nl/?url=" +
-encodeURIComponent(
-data.thumbnail.replace(/^https?:\/\//, "")
-);
+thumbnail.onload = () => {
+    console.log("Thumbnail loaded");
+};
+
+thumbnail.onerror = () => {
+    console.log("Thumbnail failed");
+};
 
 thumbnail.style.display = "block";
-
-} else {
-
-thumbnail.style.display = "none";
-
-}
-
 thumbnail.onerror = () => {
     console.log("Thumbnail failed:", data.thumbnail);
 };
@@ -129,6 +124,9 @@ videoPreview.style.display =
 
 thumbnail.style.display =
 "block";
+
+console.log(data);
+console.log(data.thumbnail);
 
 preview.style.display =
 "block";
