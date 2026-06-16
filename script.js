@@ -101,11 +101,21 @@ return;
 
 }
 
+if (data.thumbnail) {
+
 thumbnail.src =
 "https://images.weserv.nl/?url=" +
 encodeURIComponent(
 data.thumbnail.replace(/^https?:\/\//, "")
 );
+
+thumbnail.style.display = "block";
+
+} else {
+
+thumbnail.style.display = "none";
+
+}
 
 thumbnail.onerror = () => {
     console.log("Thumbnail failed:", data.thumbnail);
@@ -182,7 +192,7 @@ try {
 
 const response =
 await fetch(
-`${API}/download?url=${encodeURIComponent(currentUrl)}`
+`${API}/info?url=${encodeURIComponent(currentUrl)}`
 );
 
 if (!response.ok) {
