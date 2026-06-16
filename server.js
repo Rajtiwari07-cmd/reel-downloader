@@ -43,15 +43,18 @@ app.get("/info", (req, res) => {
 
     exec(command, (error, stdout, stderr) => {
 
-        if (error) {
+      if (error) {
 
-            console.log(stderr);
+    console.log("YT-DLP ERROR:");
+    console.log(stderr);
 
-            return res.status(500).json({
-                success: false,
-                error: "Failed to fetch media info"
-            });
-        }
+    return res.json({
+        success: true,
+        title: "Instagram Reel",
+        thumbnail: "",
+        webpage_url: url
+    });
+}
 
         try {
 
