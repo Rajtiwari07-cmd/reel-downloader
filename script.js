@@ -11,8 +11,7 @@ const videoPreview = document.getElementById("videoPreview");
 const title = document.getElementById("title");
 
 const msg = document.getElementById("msg");
-const quality =
-document.getElementById("quality");
+const quality = document.getElementById("quality");
 
 const progressContainer =
 document.querySelector(".progress-container");
@@ -20,252 +19,178 @@ document.querySelector(".progress-container");
 const progressBar =
 document.querySelector(".progress-bar");
 
-const themeBtn =
-document.getElementById("themeBtn");
-
 let currentUrl = "";
 
-/* PASTE BUTTON */
+/* PASTE */
 
-if (pasteBtn) {
+pasteBtn?.addEventListener("click", async () => {
 
-pasteBtn.addEventListener(
-"click",
-async () => {
+    try {
 
-try {
+        const text =
+        await navigator.clipboard.readText();
 
-const text =
-await navigator.clipboard.readText();
+        urlInput.value = text;
 
-urlInput.value = text;
+    } catch {
 
-} catch (err) {
+        msg.innerText =
+        "Clipboard access denied";
 
-msg.innerText =
-"Clipboard access denied";
-
-}
+    }
 
 });
-
-}
 
 /* PREVIEW */
 
-if (previewBtn) {
+previewBtn?.addEventListener("click", async () => {
 
-previewBtn.addEventListener(
-"click",
-async () => {
+    const url = urlInput.value.trim();
 
-const url =
-urlInput.value.trim();
+    if (!url) {
 
-if (!url) {
+        msg.innerText =
+        "Paste Instagram URL first";
 
-msg.innerText =
-"Please paste an Instagram URL";
+        return;
+    }
 
-return;
+    currentUrl = url;
 
-}
+    msg.innerText =
+    "Loading preview...";
 
-currentUrl = url;
+    preview.style.display = "none";
 
-msg.innerText =
-"Loading preview...";
+    try {
 
-preview.style.display =
-"none";
+        const response =
+        await fetch(
+        `${API}/info?url=${encodeURIComponent(url)}`
+        );
 
-try {
+        const data =
+        await response.json();
 
-const selectedQuality =
-quality.value;
+        if (!data.success) {
 
-const response =
-await fetch(
-`${API}/download?url=${encodeURIComponent(currentUrl)}&quality=${selectedQuality}`
-);
+            msg.innerText =
+            "Failed to fetch preview";
 
-const data =
-await response.json();
+            return;
+        }
 
-if (!data.success) {
+        thumbnail.src = data.thumbnail;
 
-msg.innerText =
-"Failed to fetch preview";
+        title.innerText =
+        data.title;
 
-return;
+        videoPreview.style.display =
+        "none";
 
-}
+        thumbnail.style.display =
+        "block";
 
-thumbnail.src = data.thumbnail;
+        preview.style.display =
+        "block";
 
-thumbnail.onload = () => {
-    console.log("Thumbnail loaded");
-};
+        msg.innerText =
+        "Preview loaded successfully";
 
-thumbnail.onerror = () => {
-    console.log("Thumbnail failed");
-};
+    } catch (err) {
 
-thumbnail.style.display = "block";
-thumbnail.onerror = () => {
-    console.log("Thumbnail failed:", data.thumbnail);
-};
+        console.error(err);
 
-title.innerText =
-data.title || "Instagram Reel";
-
-videoPreview.style.display =
-"none";
-
-thumbnail.style.display =
-"block";
-
-console.log(data);
-console.log(data.thumbnail);
-
-preview.style.display =
-"block";
-
-msg.innerText =
-"Preview loaded successfully";
-
-} catch (err) {
-
-console.error(err);
-
-msg.innerText =
-"Server error while loading preview";
-
-}
+        msg.innerText =
+        "Server error while loading preview";
+    }
 
 });
-
-}
 
 /* DOWNLOAD */
 
-if (downloadBtn) {
+downloadBtn?.addEventListener("click", async () => {
 
-downloadBtn.addEventListener(
-"click",
-async () => {
+    if (!currentUrl) {
 
-if (!currentUrl) {
+        msg.innerText =
+        "Generate preview first";
 
-msg.innerText =
-"Generate preview first";
+        return;
+    }
 
-return;
+    progressContainer.style.display =
+    "block";
 
-}
+    progressBar.style.width =
+    "0%";
 
-progressContainer.style.display =
-"block";
+    let progress = 0;
 
-progressBar.style.width =
-"0%";
+    const fakeProgress =
+    setInterval(() => {
 
-let progress = 0;
+        if (progress < 90) {
 
-const fakeProgress =
-setInterval(() => {
+            progress += 10;
 
-if (progress < 90) {
+            progressBar.style.width =
+            progress + "%";
+        }
 
-progress += 10;
+    }, 300);
 
-progressBar.style.width =
-progress + "%";
+    try {
 
-}
+        const selectedQuality =
+        quality.value;
 
-}, 300);
+        const response =
+        await fetch(
+        `${API}/download?url=${encodeURIComponent(currentUrl)}&quality=${selectedQuality}`
+        );
 
-try {
+        if (!response.ok) {
 
-const response =
-await fetch(
-`${API}/info?url=${encodeURIComponent(currentUrl)}`
-);
+            throw new Error();
+        }
 
-if (!response.ok) {
+        const blob =
+        await response.blob();
 
-throw new Error(
-"Download failed"
-);
+        clearInterval(fakeProgress);
 
-}
+        progressBar.style.width =
+        "100%";
 
-const blob =
-await response.blob();
+        const fileUrl =
+        URL.createObjectURL(blob);
 
-clearInterval(fakeProgress);
+        const a =
+        document.createElement("a");
 
-progressBar.style.width =
-"100%";
+        a.href = fileUrl;
 
-const fileUrl =
-window.URL.createObjectURL(blob);
+        a.download =
+        "vynelu-video.mp4";
 
-const a =
-document.createElement("a");
+        document.body.appendChild(a);
 
-a.href = fileUrl;
+        a.click();
 
-a.download =
-"vynelu-reel.mp4";
+        a.remove();
 
-document.body.appendChild(a);
+        msg.innerText =
+        "Download completed";
 
-a.click();
+    } catch (err) {
 
-a.remove();
+        clearInterval(fakeProgress);
 
-videoPreview.src =
-fileUrl;
+        console.error(err);
 
-videoPreview.style.display =
-"block";
-
-thumbnail.style.display =
-"none";
-
-msg.innerText =
-"Download completed";
-
-} catch (err) {
-
-clearInterval(fakeProgress);
-
-console.error(err);
-
-msg.innerText =
-"Download failed";
-
-}
+        msg.innerText =
+        "Download failed";
+    }
 
 });
-
-}
-
-/* DARK MODE */
-
-if (themeBtn) {
-
-themeBtn.addEventListener(
-"click",
-() => {
-
-document.body.classList.toggle(
-"dark-mode"
-);
-
-}
-);
-
-}
