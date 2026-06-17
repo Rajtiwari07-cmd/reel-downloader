@@ -11,7 +11,6 @@ const videoPreview = document.getElementById("videoPreview");
 const title = document.getElementById("title");
 
 const msg = document.getElementById("msg");
-const quality = document.getElementById("quality");
 
 const progressContainer =
 document.querySelector(".progress-container");
@@ -21,188 +20,269 @@ document.querySelector(".progress-bar");
 
 let currentUrl = "";
 
+
 /* PASTE */
 
 pasteBtn?.addEventListener("click", async () => {
 
-    try {
+try {
 
-        const text =
-        await navigator.clipboard.readText();
+const text =
+await navigator.clipboard.readText();
 
-        urlInput.value = text;
+urlInput.value = text;
 
-    } catch {
+}
 
-        msg.innerText =
-        "Clipboard access denied";
+catch {
 
-    }
+msg.innerText =
+"Clipboard access denied";
+
+}
 
 });
 
-/* PREVIEW */
+
+/* GENERATE PREVIEW */
 
 previewBtn?.addEventListener("click", async () => {
 
-    const url = urlInput.value.trim();
+const url =
+urlInput.value.trim();
 
-    if (!url) {
 
-        msg.innerText =
-        "Paste Instagram URL first";
+if(!url){
 
-        return;
-    }
+msg.innerText =
+"Paste Instagram URL";
 
-    currentUrl = url;
+return;
 
-    msg.innerText =
-    "Loading preview...";
+}
 
-    preview.style.display = "none";
 
-    try {
+currentUrl = url;
 
-        const response =
-        await fetch(
-        `${API}/info?url=${encodeURIComponent(url)}`
-        );
 
-        const data =
-        await response.json();
+msg.innerText =
+"Loading preview...";
 
-        if (!data.success) {
 
-            msg.innerText =
-            "Failed to fetch preview";
+preview.style.display =
+"none";
 
-            return;
-        }
 
-       thumbnail.src =
-"https://images.weserv.nl/?url=" +
-encodeURIComponent(
-data.thumbnail.replace(/^https?:\/\//, "")
+try{
+
+
+const response =
+await fetch(
+`${API}/info?url=${encodeURIComponent(url)}`
 );
 
-thumbnail.onload = () => {
-    console.log("Thumbnail loaded");
-};
 
-thumbnail.onerror = () => {
-    console.log("Thumbnail failed");
-};
+const data =
+await response.json();
+
+
+
+if(!data.success){
+
+msg.innerText =
+"Preview failed";
+
+return;
+
+}
+
+
+
+thumbnail.src =
+"https://images.weserv.nl/?url=" +
+encodeURIComponent(
+data.thumbnail.replace(/^https?:\/\//,"")
+);
+
+
+
+thumbnail.style.display =
+"block";
+
+
+videoPreview.style.display =
+"none";
+
 
 title.innerText =
 data.title;
 
-        videoPreview.style.display =
-        "none";
 
-        thumbnail.style.display =
-        "block";
 
-        preview.style.display =
-        "block";
+preview.style.display =
+"block";
 
-        msg.innerText =
-        "Preview loaded successfully";
 
-    } catch (err) {
+msg.innerText =
+"Preview loaded successfully";
 
-        console.error(err);
 
-        msg.innerText =
-        "Server error while loading preview";
-    }
+
+}
+
+catch(err){
+
+console.log(err);
+
+msg.innerText =
+"Server error";
+
+}
+
 
 });
 
+
+
 /* DOWNLOAD */
 
-downloadBtn?.addEventListener("click", async () => {
 
-    if (!currentUrl) {
+downloadBtn?.addEventListener("click", async()=>{
 
-        msg.innerText =
-        "Generate preview first";
 
-        return;
-    }
+if(!currentUrl){
 
-    progressContainer.style.display =
-    "block";
+msg.innerText =
+"Generate preview first";
 
-    progressBar.style.width =
-    "0%";
+return;
 
-    let progress = 0;
+}
 
-    const fakeProgress =
-    setInterval(() => {
 
-        if (progress < 90) {
 
-            progress += 10;
+progressContainer.style.display =
+"block";
 
-            progressBar.style.width =
-            progress + "%";
-        }
 
-    }, 300);
+progressBar.style.width =
+"0%";
 
-    try {
 
-        const selectedQuality =
-        quality.value;
 
-        const response =
-        await fetch(
-        `${API}/download?url=${encodeURIComponent(currentUrl)}&quality=${selectedQuality}`
-        );
+let progress=0;
 
-        if (!response.ok) {
 
-            throw new Error();
-        }
+const timer =
+setInterval(()=>{
 
-        const blob =
-        await response.blob();
 
-        clearInterval(fakeProgress);
+if(progress<90){
 
-        progressBar.style.width =
-        "100%";
+progress +=10;
 
-        const fileUrl =
-        URL.createObjectURL(blob);
+progressBar.style.width =
+progress+"%";
 
-        const a =
-        document.createElement("a");
+}
 
-        a.href = fileUrl;
 
-        a.download =
-        "vynelu-video.mp4";
+},300);
 
-        document.body.appendChild(a);
 
-        a.click();
 
-        a.remove();
+try{
 
-        msg.innerText =
-        "Download completed";
 
-    } catch (err) {
+const response =
+await fetch(
+`${API}/download?url=${encodeURIComponent(currentUrl)}`
+);
 
-        clearInterval(fakeProgress);
 
-        console.error(err);
 
-        msg.innerText =
-        "Download failed";
-    }
+const blob =
+await response.blob();
+
+
+
+clearInterval(timer);
+
+
+progressBar.style.width =
+"100%";
+
+
+
+const videoURL =
+URL.createObjectURL(blob);
+
+
+
+
+
+/* SHOW VIDEO PLAYER */
+
+videoPreview.src =
+videoURL;
+
+
+videoPreview.style.display =
+"block";
+
+
+thumbnail.style.display =
+"none";
+
+
+videoPreview.play();
+
+
+
+
+
+/* DOWNLOAD FILE */
+
+const a =
+document.createElement("a");
+
+
+a.href =
+videoURL;
+
+
+a.download =
+"vynelu-reel.mp4";
+
+
+document.body.appendChild(a);
+
+
+a.click();
+
+
+a.remove();
+
+
+
+msg.innerText =
+"Download completed";
+
+
+}
+
+
+catch(err){
+
+clearInterval(timer);
+
+console.log(err);
+
+msg.innerText =
+"Download failed";
+
+}
+
+
 
 });
