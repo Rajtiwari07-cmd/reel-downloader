@@ -80,10 +80,22 @@ previewBtn?.addEventListener("click", async () => {
             return;
         }
 
-        thumbnail.src = data.thumbnail;
+       thumbnail.src =
+"https://images.weserv.nl/?url=" +
+encodeURIComponent(
+data.thumbnail.replace(/^https?:\/\//, "")
+);
 
-        title.innerText =
-        data.title;
+thumbnail.onload = () => {
+    console.log("Thumbnail loaded");
+};
+
+thumbnail.onerror = () => {
+    console.log("Thumbnail failed");
+};
+
+title.innerText =
+data.title;
 
         videoPreview.style.display =
         "none";
