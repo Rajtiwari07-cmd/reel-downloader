@@ -1,144 +1,76 @@
 const API = "https://reel-downloader-a0pc.onrender.com";
 
-
 const urlInput = document.getElementById("url");
+const pasteBtn = document.getElementById("pasteBtn");
+const previewBtn = document.getElementById("previewBtn");
+const downloadBtn = document.getElementById("downloadBtn");
 
-const pasteBtn =
-document.getElementById("pasteBtn");
+const preview = document.getElementById("preview");
+const thumbnail = document.getElementById("thumbnail");
+const videoPreview = document.getElementById("videoPreview");
+const title = document.getElementById("title");
 
-const previewBtn =
-document.getElementById("previewBtn");
-
-const downloadBtn =
-document.getElementById("downloadBtn");
-
-
-const preview =
-document.getElementById("preview");
-
-const thumbnail =
-document.getElementById("thumbnail");
-
-const videoPreview =
-document.getElementById("videoPreview");
-
-const title =
-document.getElementById("title");
-
-
-const msg =
-document.getElementById("msg");
-
-
-const loader =
-document.getElementById("loader");
-
+const msg = document.getElementById("msg");
 
 const progressContainer =
 document.querySelector(".progress-container");
 
-
 const progressBar =
 document.querySelector(".progress-bar");
-
 
 let currentUrl = "";
 
 
+/* PASTE */
 
-/* =================
-   PASTE BUTTON
-================= */
+pasteBtn?.addEventListener("click", async () => {
 
-
-pasteBtn?.addEventListener(
-"click",
-async()=>{
-
-
-try{
-
+try {
 
 const text =
 await navigator.clipboard.readText();
 
-
-urlInput.value =
-text;
-
+urlInput.value = text;
 
 }
 
-
-catch{
-
+catch {
 
 msg.innerText =
 "Clipboard access denied";
 
-
 }
-
 
 });
 
 
+/* GENERATE PREVIEW */
 
-
-
-/* =================
-   PREVIEW
-================= */
-
-
-previewBtn?.addEventListener(
-"click",
-async()=>{
-
+previewBtn?.addEventListener("click", async () => {
 
 const url =
 urlInput.value.trim();
 
 
-
 if(!url){
-
 
 msg.innerText =
 "Paste Instagram URL";
 
-
 return;
 
-
 }
 
 
-
-currentUrl =
-url;
-
-
-
-/* SHOW LOADER */
-
-
-if(loader){
-
-loader.style.display =
-"block";
-
-}
+currentUrl = url;
 
 
 msg.innerText =
-"";
-
+"Loading preview...";
 
 
 preview.style.display =
 "none";
-
 
 
 try{
@@ -150,7 +82,6 @@ await fetch(
 );
 
 
-
 const data =
 await response.json();
 
@@ -158,28 +89,13 @@ await response.json();
 
 if(!data.success){
 
-
-if(loader){
-
-loader.style.display =
-"none";
-
-}
-
-
 msg.innerText =
 "Preview failed";
 
-
 return;
-
 
 }
 
-
-
-
-/* THUMBNAIL */
 
 
 thumbnail.src =
@@ -194,30 +110,17 @@ thumbnail.style.display =
 "block";
 
 
-
 videoPreview.style.display =
 "none";
 
 
-
 title.innerText =
-data.title ||
-"Instagram Reel";
+data.title;
 
 
 
 preview.style.display =
 "block";
-
-
-
-if(loader){
-
-loader.style.display =
-"none";
-
-}
-
 
 
 msg.innerText =
@@ -227,23 +130,9 @@ msg.innerText =
 
 }
 
-
-
 catch(err){
 
-
 console.log(err);
-
-
-
-if(loader){
-
-loader.style.display =
-"none";
-
-}
-
-
 
 msg.innerText =
 "Server error";
@@ -251,41 +140,26 @@ msg.innerText =
 }
 
 
-
 });
 
 
 
+/* DOWNLOAD */
 
 
-
-
-/* =================
-   DOWNLOAD
-================= */
-
-
-
-downloadBtn?.addEventListener(
-"click",
-async()=>{
+downloadBtn?.addEventListener("click", async()=>{
 
 
 if(!currentUrl){
 
-
 msg.innerText =
 "Generate preview first";
 
-
 return;
-
 
 }
 
 
-
-if(progressContainer){
 
 progressContainer.style.display =
 "block";
@@ -294,35 +168,26 @@ progressContainer.style.display =
 progressBar.style.width =
 "0%";
 
-}
 
 
-
-let progress = 0;
-
+let progress=0;
 
 
 const timer =
 setInterval(()=>{
 
 
-if(progress < 90){
+if(progress<90){
 
-
-progress += 10;
-
+progress +=10;
 
 progressBar.style.width =
-progress + "%";
-
+progress+"%";
 
 }
 
 
-
 },300);
-
-
 
 
 
@@ -336,19 +201,6 @@ await fetch(
 
 
 
-if(!response.ok){
-
-
-throw new Error(
-"Download failed"
-);
-
-
-}
-
-
-
-
 const blob =
 await response.blob();
 
@@ -357,13 +209,8 @@ await response.blob();
 clearInterval(timer);
 
 
-
-if(progressBar){
-
 progressBar.style.width =
 "100%";
-
-}
 
 
 
@@ -374,22 +221,18 @@ URL.createObjectURL(blob);
 
 
 
-/* SHOW VIDEO */
-
+/* SHOW VIDEO PLAYER */
 
 videoPreview.src =
 videoURL;
-
 
 
 videoPreview.style.display =
 "block";
 
 
-
 thumbnail.style.display =
 "none";
-
 
 
 videoPreview.play();
@@ -398,10 +241,7 @@ videoPreview.play();
 
 
 
-
-
-/* SAVE FILE */
-
+/* DOWNLOAD FILE */
 
 const a =
 document.createElement("a");
@@ -415,7 +255,6 @@ a.download =
 "vynelu-reel.mp4";
 
 
-
 document.body.appendChild(a);
 
 
@@ -426,28 +265,21 @@ a.remove();
 
 
 
-
 msg.innerText =
 "Download completed";
-
 
 
 }
 
 
-
 catch(err){
-
 
 clearInterval(timer);
 
-
 console.log(err);
-
 
 msg.innerText =
 "Download failed";
-
 
 }
 
