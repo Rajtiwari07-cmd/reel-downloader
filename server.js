@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const { exec } = require("child_process");
+const { exec, spawn } = require("child_process");
 const path = require("path");
 const fs = require("fs");
 
@@ -11,6 +11,15 @@ app.use(cors());
 app.use(express.json());
 
 app.use(express.static(__dirname));
+let downloadProgress = 0;
+
+app.get("/progress", (req, res) => {
+
+    res.json({
+        progress: downloadProgress
+    });
+
+});
 
 const downloadFolder =
     path.join(__dirname, "downloads");
@@ -113,17 +122,52 @@ const command =
 
 console.log(command);
 
-exec(command, (error, stdout, stderr) => {
+downloadProgress = 0;
 
-    if (error) {
-        console.log(stderr);
-        return res.status(500).send("Download failed");
+const yt = spawn("yt-dlp", [
+    "--no-playlist",
+    "--format",
+    format,
+    "-o",
+    `${downloadFolder}/%(title)s.%(ext)s`,
+    url
+]);
+
+yt.stdout.on("data", (data) => {
+
+    const text = data.toString();
+
+    console.log(text);
+
+    const match = text.match(/(\d+\.\d+)%/);
+
+    if (match) {
+
+        downloadProgress =
+            parseFloat(match[1]);
+
     }
+
+});
+
+yt.stderr.on("data", (data) => {
+
+    console.log(data.toString());
+
+});
+
+yt.on("close", () => {
+
+    downloadProgress = 100;
 
     const files = fs.readdirSync(downloadFolder);
 
     if (files.length === 0) {
-        return res.status(500).send("No file downloaded");
+
+        return res.status(500).send(
+            "No file downloaded"
+        );
+
     }
 
     const latestFile = files
@@ -139,6 +183,7 @@ exec(command, (error, stdout, stderr) => {
         path.join(downloadFolder, latestFile.name);
 
     res.download(filePath);
+
 });
 
 });
